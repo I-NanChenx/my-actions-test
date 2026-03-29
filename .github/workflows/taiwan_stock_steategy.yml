@@ -1,14 +1,14 @@
-name: TSMC Stock Monitor
+name: Multi-Stock Monitor
 
 on:
   push:
   schedule:
-    - cron: '5 1 * * 1-5'  # 台灣週一至週五 09:05
-    - cron: '35 5 * * 1-5' # 台灣週一至週五 13:35
+    - cron: '5 1 * * 1-5'  # 台灣 09:05
+    - cron: '35 5 * * 1-5' # 台灣 13:35
   workflow_dispatch:
 
 jobs:
-  monitor:
+  automation-job:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,9 +22,11 @@ jobs:
       - name: Install dependencies
         run: pip install requests yfinance
 
-      - name: Run TSMC Script
+      - name: Run Monitor
         env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      
-        run: python taiwan_stock_steategy.py
+          # 這裡要對應你在 GitHub Settings 設定的 Secrets 名稱
+          TSMC_TOKEN: ${{ secrets.TSMC_BOT_TOKEN }}
+          ETF878_TOKEN: ${{ secrets.BOT_TOKEN_00878 }}
+          ETF56_TOKEN: ${{ secrets.BOT_TOKEN_0056 }}
+          MY_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor.py
