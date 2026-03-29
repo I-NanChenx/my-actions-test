@@ -5,8 +5,8 @@ from datetime import datetime
 # 1. 抓取環境變數 (請確認 GitHub Secrets 名稱對應)
 TDX_ID = os.getenv("TDX_ID")
 TDX_SECRET = os.getenv("TDX_SECRET")
-BOT_TOKEN = os.getenv("TRAFFIC_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
 def send_telegram(text):
     """發送訊息至 Telegram"""
