@@ -20,9 +20,7 @@ jobs:
 
       - name: Install dependencies (安裝截圖工具與套件)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          python -m pip install --upgrade pip
+   
           pip install requests
 
       - name: Run Traffic Script
