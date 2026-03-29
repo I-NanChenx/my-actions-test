@@ -83,4 +83,53 @@ def main():
         send_tg(f"❌ 發生崩潰: {str(e)}")
 
 if __name__ == "__main__":
+    main()        # 步驟 2: 抓取「靜態路段字典」
+        dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
+        dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
+        
+        dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
+        if not isinstance(dict_list, list): return
+
+        target_ids = {}
+        for item in dict_list:
+            if isinstance(item, dict):
+                name = item.get('SectionName', '')
+                if "新竹" in name and "竹北" in name:
+                    target_ids[item.get('SectionID')] = name
+                
+        if not target_ids: return
+
+        # 步驟 3: 抓取「即時路況」
+        live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
+        live_res = requests.get(live_url, headers=headers, timeout=15).json()
+        
+        live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
+        if not isinstance(live_list, list): return
+
+        # 🔥 修正時區：UTC 時間加上 8 小時
+        tw_time = datetime.utcnow() + timedelta(hours=8)
+        
+        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
+        found = False
+        
+        for item in live_list:
+            if isinstance(item, dict):
+                sid = item.get('SectionID')
+                if sid in target_ids:
+                    name = target_ids[sid]
+                    t = item.get('TravelTime', 0) // 60
+                    # 塞車門檻設定：超過 12 分鐘亮紅燈
+                    status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+                    msg += f"• {name}: <b>{t}分</b> ({status})\n"
+                    found = True
+                
+        if found:
+            send_tg(msg)
+        else:
+            send_tg("⚠️ 找到了地名，但目前缺乏分鐘數數據。")
+
+    except Exception as e:
+        send_tg(f"❌ 發生崩潰: {str(e)}")
+
+if __name__ == "__main__":
     main()
