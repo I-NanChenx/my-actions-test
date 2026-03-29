@@ -23,9 +23,9 @@ def send_tg_photo(caption, img_path):
         with open(img_path, "rb") as f:
             res = requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
             if res.status_code != 200:
-                send_tg_text(f"❌ 照片上傳 TG 失敗: {res.text}")
+                send_tg_text(f"❌ 照片上傳失敗: {res.text}")
     except Exception as e:
-        send_tg_text(f"❌ 讀取照片檔案失敗: {e}")
+        send_tg_text(f"❌ 讀寫照片檔案失敗: {e}")
 
 def main():
     send_tg_text("hello")
@@ -41,7 +41,7 @@ def main():
             
         headers = {'authorization': f'Bearer {token}'}
 
-        # 步驟 2: 抓取「靜態路段字典」找 ID
+        # 步驟 2: 抓字典
         dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
         dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
         dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
@@ -54,7 +54,7 @@ def main():
                     if "新竹" in name and "竹北" in name:
                         target_ids[item.get('SectionID')] = name
 
-        # 步驟 3: 抓即時路況分鐘數
+        # 步驟 3: 抓即時路況
         live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
         live_res = requests.get(live_url, headers=headers, timeout=15).json()
         live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
@@ -77,7 +77,7 @@ def main():
         if found:
             send_tg_text(msg)
 
-        # 步驟 4: 抓取攝影機並「強制截圖」 (加入錯誤回報)
+        # 步驟 4: 強制截圖 (改用公里數 91~95 鎖定)
         cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
         cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
         cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
@@ -87,30 +87,36 @@ def main():
             for c in cctv_list:
                 if isinstance(c, dict):
                     name = c.get('CCTVName', '') or c.get('Location', '')
-                    if "國道1號" in name and ("新竹" in name or "竹北" in name):
+                    # 鎖定國道一號，且公里數包含 91~95 的攝影機
+                    is_target_area = any(k in name for k in ["91", "92", "93", "94", "95"])
+                    
+                    if ("國1" in name or "國道1" in name or "國道一" in name) and is_target_area:
                         vid_url = c.get('VideoStreamURL', '')
                         if vid_url:
                             img_file = f"cctv_{cctv_count}.jpg"
                             try:
-                                # 呼叫截圖工具，並把時間拉長到 15 秒
                                 cmd = ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file]
                                 result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
                                 
                                 if result.returncode == 0 and os.path.exists(img_file):
-                                    send_tg_photo(f"📷 {name} 畫面", img_file)
+                                    send_tg_photo(f"📷 {name}", img_file)
                                     cctv_count += 1
                                 else:
-                                    # 如果失敗，把最後 200 個字的錯誤原因傳到手機
-                                    err = result.stderr[-200:] if result.stderr else "未知錯誤"
-                                    send_tg_text(f"⚠️ {name} 截圖失敗！原因：\n<code>{err}</code>")
+                                    err = result.stderr[-100:] if result.stderr else "無詳細錯誤"
+                                    # 失敗的話，把錯誤印出來
+                                    send_tg_text(f"⚠️ {name} 截圖失敗: {err}")
                                     
                             except subprocess.TimeoutExpired:
-                                send_tg_text(f"⚠️ {name} 讀取影片超時 (可能被擋海外 IP)")
+                                send_tg_text(f"⚠️ {name} 截圖超時")
                             except Exception as e:
-                                send_tg_text(f"⚠️ 系統錯誤: {e}")
+                                send_tg_text(f"⚠️ {name} 系統異常: {e}")
                                 
-                        if cctv_count >= 2:
+                        if cctv_count >= 2: # 抓兩張就收工
                             break
+            
+            # 防呆：如果連一支符合條件的都沒找到，一定要通知
+            if cctv_count == 0:
+                send_tg_text("⚠️ 找不到 91K~95K (新竹/竹北段) 的可用攝影機。")
 
     except Exception as e:
         send_tg_text(f"❌ 發生崩潰: {str(e)}")
