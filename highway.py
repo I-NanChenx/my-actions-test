@@ -18,42 +18,45 @@ def get_traffic():
             print(f"❌ Token 取得失敗：{auth_data}")
             return
 
-        # 2. 取得資料
-        url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/ControlPoint/N1?$format=JSON"
+        # 2. 取得資料 (修正：路徑改為 Section，這才包含「新竹-竹北」這種區間名稱)
+        url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/Section/N1?$format=JSON"
         headers = {'authorization': f'Bearer {access_token}'}
         data = requests.get(url, headers=headers).json()
         
-        # 修正：確保 data 一定是列表，如果 API 只回傳一個物件就把它包成列表
-        if isinstance(data, dict):
-            # 如果回傳的是錯誤訊息 (例如 {"message": "..."})
-            if "message" in data:
-                print(f"❌ API 回傳錯誤：{data['message']}")
-                return
-            data = [data] # 將單一字典包進清單
+        # 錯誤檢查
+        if isinstance(data, dict) and "message" in data:
+            print(f"❌ API 回傳錯誤：{data['message']}")
+            # 如果 Section 也找不到，我們印出建議
+            print("💡 建議檢查 TDX 官網 API 測試頁面，確認 N1 路線是否開放 Section 查詢。")
+            return
             
+        if not isinstance(data, list):
+            data = [data] if isinstance(data, dict) else []
+
         print(f"📊 成功獲取資料，包含 {len(data)} 筆路段")
 
         msg = f"<b>🚗 國一新竹段路況 ({datetime.now().strftime('%H:%M')})</b>\n"
         msg += "────────────────\n"
         found = False
         
-        # 過濾目標關鍵字
+        # 針對你的通勤路線過濾
         targets = ["新竹", "竹北"]
 
         for item in data:
-            name = item.get('SectionName', '')
-            # 只要路段名稱同時包含「新竹」與「竹北」
-            if all(k in name for k in targets):
-                t = item.get('TravelTime', 0) // 60
-                status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
-                msg += f"• {name}: <b>{t}分</b> ({status})\n"
-                found = True
+            if isinstance(item, dict):
+                name = item.get('SectionName', '')
+                # 只要路段名稱同時包含「新竹」與「竹北」
+                if all(k in name for k in targets):
+                    # TravelTime 是秒，轉為分鐘
+                    t = item.get('TravelTime', 0) // 60
+                    status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+                    msg += f"• {name}: <b>{t}分</b> ({status})\n"
+                    found = True
 
         if not found:
-            msg += "⚠️ 沒找到包含新竹/竹北的路段。\n"
-            # 增加偵錯資訊，看看路段到底叫什麼
-            if len(data) > 0:
-                msg += f"<i>(API 第一筆路段：{data[0].get('SectionName', '無名稱')})</i>"
+            msg += "⚠️ 目前沒找到包含新竹與竹北的區間資料。\n"
+            if data:
+                print(f"DEBUG: 第一筆路段名稱為 {data[0].get('SectionName')}")
 
         # 3. 發送訊息
         requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", 
