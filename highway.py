@@ -2,7 +2,7 @@ import os
 import requests
 from datetime import datetime
 
-# 1. 抓取環境變數 (請確認 GitHub Secrets 名稱對應)
+# 1. 抓取環境變數 (嚴格對應你的 Secrets 名稱)
 TDX_ID = os.getenv("TDX_ID")
 TDX_SECRET = os.getenv("TDX_SECRET")
 BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
@@ -11,26 +11,26 @@ CHAT_ID = os.getenv("CHAT_ID")
 def send_telegram(text):
     """發送訊息至 Telegram"""
     if not BOT_TOKEN or not CHAT_ID:
-        print("❌ 錯誤：找不到 Telegram Token 或 Chat ID，請檢查 Secrets 設定。")
+        print("❌ 錯誤：找不到 TRAFFIC_TOKEN 或 CHAT_ID")
         return
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
     try:
         res = requests.post(url, data=payload, timeout=10)
-        if res.status_code != 200:
-            print(f"❌ Telegram 發送失敗，狀態碼：{res.status_code}，回應：{res.text}")
-        else:
+        if res.status_code == 200:
             print("✅ Telegram 訊息發送成功")
+        else:
+            print(f"❌ Telegram 發送失敗：{res.text}")
     except Exception as e:
         print(f"❌ Telegram 連線異常: {e}")
 
 def main():
     print("--- 任務啟動 ---")
     
-    # 【核心測試】先丟 Hello，這步失敗代表 Secrets 或 Bot 設定有問題
-    send_telegram("👋 <b>Hello! Traffic Bot 測試連線中...</b>\n正在開始抓取路況資料。")
+    # 【測試連線】先丟 Hello
+    send_telegram("👋 <b>Hello! Traffic Bot 測試連線中...</b>\n正在連線至 TDX 抓取最新路況。")
 
-    # 1. TDX 認證
+    # 1. TDX 認證 (取得 Token)
     try:
         auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
         auth_res = requests.post(auth_url, data={
@@ -43,25 +43,26 @@ def main():
         print("✅ TDX Token 取得成功")
     except Exception as e:
         error_msg = f"❌ TDX 認證失敗：{e}"
-        print(error_msg)
         send_telegram(error_msg)
         return
 
-    # 2. 抓取路況 (使用最穩定的 Section API)
+    # 2. 抓取路況 (修正版 URL)
+    # 注意：我們抓取「全線路段」後再由程式過濾，這比指定 /N1 更穩定
     try:
         url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/Section?$format=JSON"
         headers = {'authorization': f'Bearer {token}'}
         res = requests.get(url, headers=headers, timeout=10)
         data = res.json()
         
-        # 偵錯：如果不是 list，就把回傳的錯誤印出來
+        # 3. 處理 API 回傳異常
         if not isinstance(data, list):
-            error_detail = f"❌ API 回傳異常格式：{data}"
-            print(error_detail)
-            send_telegram(error_detail)
+            # 如果 API 噴錯 (例如 Resouce Not Found)，我們會在這裡抓到
+            error_msg = f"❌ TDX API 回傳異常內容：\n<code>{str(data)[:100]}</code>"
+            print(error_msg)
+            send_telegram(error_msg)
             return
 
-        # 3. 過濾新竹段關鍵字
+        # 4. 過濾新竹段關鍵字
         msg = f"<b>🚗 國一新竹段路況 ({datetime.now().strftime('%H:%M')})</b>\n"
         msg += "────────────────\n"
         found = False
@@ -71,6 +72,7 @@ def main():
             # 只要包含「新竹」與「竹北」
             if "新竹" in name and "竹北" in name:
                 t = item.get('TravelTime', 0) // 60
+                # 判定 NG 門檻
                 status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
                 msg += f"• {name}: <b>{t}分</b> ({status})\n"
                 found = True
