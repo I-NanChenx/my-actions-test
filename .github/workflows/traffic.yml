@@ -1,9 +1,7 @@
 name: Traffic Bot
 
 on:
-  workflow_dispatch: # 允許你隨時去點 "Run workflow" 手動測試
-  # schedule:
-  #   - cron: '45 23 * * 0-4' # 台灣時間星期一到五，早上 07:45 自動執行 (如果要開啟，把這兩行最前面的 # 刪除即可)
+  workflow_dispatch:
 
 jobs:
   run-script:
@@ -18,9 +16,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies (安裝截圖工具與套件)
+      - name: Install dependencies
         run: |
-   
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
           pip install requests
 
       - name: Run Traffic Script
