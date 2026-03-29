@@ -5,7 +5,7 @@ from datetime import datetime
 TDX_ID = os.getenv("TDX_ID")
 TDX_SECRET = os.getenv("TDX_SECRET")
 BOT_TOKEN = os.getenv("TRAFFIC_BOT_TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 def send_telegram(text):
     """通用的 Telegram 發送函數"""
