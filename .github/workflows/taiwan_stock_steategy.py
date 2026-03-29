@@ -3,38 +3,57 @@ import requests
 import yfinance as yf
 from datetime import datetime
 
-def send_telegram(message):
-    token = os.getenv("BOT_TOKEN")
-    chat_id = os.getenv("CHAT_ID")
+def send_telegram(token, chat_id, message):
+    if not token or not chat_id:
+        print("錯誤：缺少 Token 或 Chat ID")
+        return
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
-    try:
-        requests.post(url, data=payload).raise_for_status()
-    except Exception as e:
-        print(f"Telegram 發送失敗: {e}")
+    requests.post(url, data=payload)
 
-def analyze_tsmc():
-    stock = yf.Ticker("2330.TW")
-    # 抓取過去 100 天的資料來計算均線
+def get_stock_data(symbol):
+    stock = yf.Ticker(symbol)
     df = stock.history(period="100d")
-    
     current_price = df['Close'].iloc[-1]
-    ma20 = df['Close'].rolling(window=20).mean().iloc[-1]
     ma60 = df['Close'].rolling(window=60).mean().iloc[-1]
     
-    # 簡單的買入邏輯判斷
-    status = "🔍 觀望中"
+    # 判斷買入點（可根據需求調整邏輯）
     if current_price < ma60:
-        status = "🟢 <b>低於季線 (MA60)，適合分批佈局！</b>"
-    elif current_price < ma20:
-        status = "🟡 <b>跌破月線 (MA20)，可以開始留意。</b>"
+        advice = "🟢 <b>低於季線，適合分批佈局！</b>"
     else:
-        status = "🔴 <b>高於均線，建議不追高。</b>"
-        
-    return current_price, ma20, ma60, status
+        advice = "🔴 <b>高於均線，暫不追高。</b>"
+    return current_price, ma60, advice
 
 if __name__ == "__main__":
-    try:
+    # 定義標的與對應的 Token 環境變數名稱
+    stock_configs = [
+        {"symbol": "2330.TW", "name": "台積電", "token_env": "TSMC_TOKEN"},
+        {"symbol": "00878.TW", "name": "國泰 00878", "token_env": "ETF878_TOKEN"},
+        {"symbol": "0056.TW", "name": "元大 0056", "token_env": "ETF56_TOKEN"}
+    ]
+
+    # 取得共用的 Chat ID
+    common_chat_id = os.getenv("COMMON_CHAT_ID")
+
+    for stock in stock_configs:
+        # 取得專屬該標的的 Bot Token
+        bot_token = os.getenv(stock['token_env'])
+        
+        try:
+            price, m60, advice = get_stock_data(stock['symbol'])
+            now = datetime.now().strftime("%Y-%m-%d %H:%M")
+            
+            message = (f"<b>📊 {stock['name']} 報告</b>\n"
+                       f"時間：{now}\n"
+                       f"當前價格：{price:.2f}\n"
+                       f"季線支撐：{m60:.2f}\n"
+                       f"────────────────\n"
+                       f"建議：{advice}")
+            
+            send_telegram(bot_token, common_chat_id, message)
+            print(f"{stock['name']} 發送成功")
+        except Exception as e:
+            print(f"{stock['name']} 執行失敗: {e}")    try:
         price, m20, m60, advice = analyze_tsmc()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         
