@@ -10,7 +10,6 @@ BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_tg_text(text):
-    """傳送一般文字"""
     if not BOT_TOKEN or not CHAT_ID: return
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
@@ -19,17 +18,16 @@ def send_tg_text(text):
         pass
 
 def send_tg_photo(caption, img_path):
-    """傳送實體照片檔案"""
-    if not BOT_TOKEN or not CHAT_ID: return
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
     try:
         with open(img_path, "rb") as f:
-            requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
+            res = requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
+            if res.status_code != 200:
+                send_tg_text(f"❌ 照片上傳 TG 失敗: {res.text}")
     except Exception as e:
-        print(f"照片傳送失敗: {e}")
+        send_tg_text(f"❌ 讀取照片檔案失敗: {e}")
 
 def main():
-    # 鐵律：先打招呼
     send_tg_text("hello")
 
     try:
@@ -79,7 +77,7 @@ def main():
         if found:
             send_tg_text(msg)
 
-        # 步驟 4: 抓取攝影機並「強制截圖」
+        # 步驟 4: 抓取攝影機並「強制截圖」 (加入錯誤回報)
         cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
         cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
         cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
@@ -89,27 +87,29 @@ def main():
             for c in cctv_list:
                 if isinstance(c, dict):
                     name = c.get('CCTVName', '') or c.get('Location', '')
-                    # 鎖定新竹或竹北的國道攝影機
                     if "國道1號" in name and ("新竹" in name or "竹北" in name):
                         vid_url = c.get('VideoStreamURL', '')
                         if vid_url:
                             img_file = f"cctv_{cctv_count}.jpg"
                             try:
-                                # 呼叫 GitHub 主機內建的 ffmpeg，讀取影片流並截取 1 幀存成 jpg
-                                subprocess.run(
-                                    ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file],
-                                    stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL,
-                                    timeout=10
-                                )
-                                # 確定截圖成功產生後，當作照片直接發到 Telegram
-                                if os.path.exists(img_file):
-                                    send_tg_photo(f"📷 {name} 即時畫面", img_file)
-                                    cctv_count += 1
-                            except Exception as e:
-                                pass # 截圖超時或失敗就跳過，不干擾主程式
+                                # 呼叫截圖工具，並把時間拉長到 15 秒
+                                cmd = ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file]
+                                result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
                                 
-                        if cctv_count >= 2: # 最多送 2 張避免洗版
+                                if result.returncode == 0 and os.path.exists(img_file):
+                                    send_tg_photo(f"📷 {name} 畫面", img_file)
+                                    cctv_count += 1
+                                else:
+                                    # 如果失敗，把最後 200 個字的錯誤原因傳到手機
+                                    err = result.stderr[-200:] if result.stderr else "未知錯誤"
+                                    send_tg_text(f"⚠️ {name} 截圖失敗！原因：\n<code>{err}</code>")
+                                    
+                            except subprocess.TimeoutExpired:
+                                send_tg_text(f"⚠️ {name} 讀取影片超時 (可能被擋海外 IP)")
+                            except Exception as e:
+                                send_tg_text(f"⚠️ 系統錯誤: {e}")
+                                
+                        if cctv_count >= 2:
                             break
 
     except Exception as e:
