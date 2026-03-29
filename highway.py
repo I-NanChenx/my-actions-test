@@ -1,76 +1,86 @@
 import os
 import requests
-import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 
-def send_tsmc():
-    # 1. 抓取環境變數 (請確保 YAML 裡左邊名稱是 TSMC_TOKEN)
-    token = os.getenv("TRAFFIC_TOKEN")
-    chat_id = os.getenv("CHAT_ID")
+# 1. 抓取環境變數
+TDX_ID = os.getenv("TDX_ID")
+TDX_SECRET = os.getenv("TDX_SECRET")
+BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
-    print(f"🚀 啟動台監控 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+def send_tg(text):
+    if not BOT_TOKEN or not CHAT_ID: return
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    try:
+        requests.post(url, data={"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=10)
+    except:
+        pass
 
-    if not token or not chat_id:
-        print(f"❌ 錯誤：找不到 TSMC_TOKEN({bool(token)}) 或 CHAT_ID({bool(chat_id)})")
-        return
+def main():
+    # 鐵律：先打招呼
+    send_tg("hello")
 
     try:
-        # 2. 抓取資料 (使用 2330.TW)
-        print("--- 步驟 1: 正在從 Yahoo Finance 抓取資料 ---")
-        stock = yf.Ticker("2330.TW")
-        # 抓取 150 天資料以計算 120MA
-        hist = stock.history(period="150d")
-
-        if hist.empty:
-            print("❌ 錯誤：無法取得台積電歷史資料 (DataFrame is empty)。")
-            # 嘗試抓取即時價格作為備案
-            price = stock.fast_info.last_price
-            print(f"💡 備案：僅抓取到即時價格 {price}，但無法計算均線。")
-            return
-
-        # 3. 計算數據
-        print("--- 步驟 2: 正在計算均線數據 ---")
-        current_price = round(hist['Close'].iloc[-1], 2)
-        ma20 = round(hist['Close'].rolling(window=20).mean().iloc[-1], 2)
-        ma60 = round(hist['Close'].rolling(window=60).mean().iloc[-1], 2)
-        ma120 = round(hist['Close'].rolling(window=120).mean().iloc[-1], 2)
-
-        # 4. 判斷策略
-        advice = "🔴 股價高於均線，建議觀望。"
-        status_emoji = "⏳"
-
-        if current_price <= ma120:
-            advice = "🚨 <b>【資金池 C 觸發】台積電跌破半年線！</b>\n請準備動用黑天鵝戰備金，進行危機入市！"
-            status_emoji = "🚨"
-        elif current_price <= ma60:
-            advice = "⚠️ <b>【資金池 B 觸發】台積電跌破季線！</b>\n這是一個勝率極高的波段加碼點。"
-            status_emoji = "⚠️"
-        elif current_price <= ma20:
-            advice = "🔔 <b>【資金池 B 觸發】台積電回測月線！</b>\n短期回檔，可視情況啟動第一筆零股低接。"
-            status_emoji = "🔔"
-
-        # 5. 組裝訊息
-        msg = (f"{status_emoji} <b>TSMC (2330.TW) 策略報告</b>\n"
-               f"────────────────\n"
-               f"• x：<b>{current_price}</b>\n"
-               f"• 月線(x)：{ma20}\n"
-               f"• 季線(x)：{ma60}\n"
-               f"• 半年線(x)：{ma120}\n"
-               f"────────────────\n"
-               f"💡 策略建議：\n{advice}")
-
-        # 6. 發送 Telegram
-        print("--- 步驟 3: 正在發送 Telegram 訊息 ---")
-        url = f"https://api.telegram.org/bot{token}/sendMessage"
-        res = requests.post(url, data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
+        # 步驟 1: 取得 Token
+        auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
+        auth_res = requests.post(auth_url, data={
+            'grant_type': 'client_credentials', 'client_id': TDX_ID, 'client_secret': TDX_SECRET
+        }, timeout=10)
+        token = auth_res.json().get('access_token')
         
-        if res.status_code == 200:
-            print("✅ 訊息發送成功！")
+        if not token:
+            send_tg("❌ Token 取得失敗")
+            return
+            
+        headers = {'authorization': f'Bearer {token}'}
+
+        # 步驟 2: 抓取「靜態路段字典」
+        dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
+        dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
+        
+        dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
+        if not isinstance(dict_list, list): return
+
+        target_ids = {}
+        for item in dict_list:
+            if isinstance(item, dict):
+                name = item.get('SectionName', '')
+                if "新竹" in name and "竹北" in name:
+                    target_ids[item.get('SectionID')] = name
+                
+        if not target_ids: return
+
+        # 步驟 3: 抓取「即時路況」
+        live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
+        live_res = requests.get(live_url, headers=headers, timeout=15).json()
+        
+        live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
+        if not isinstance(live_list, list): return
+
+        # 🔥 修正時區：UTC 時間加上 8 小時
+        tw_time = datetime.utcnow() + timedelta(hours=8)
+        
+        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
+        found = False
+        
+        for item in live_list:
+            if isinstance(item, dict):
+                sid = item.get('SectionID')
+                if sid in target_ids:
+                    name = target_ids[sid]
+                    t = item.get('TravelTime', 0) // 60
+                    # 塞車門檻設定：超過 12 分鐘亮紅燈
+                    status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+                    msg += f"• {name}: <b>{t}分</b> ({status})\n"
+                    found = True
+                
+        if found:
+            send_tg(msg)
         else:
-            print(f"❌ Telegram 發送失敗：{res.text}")
+            send_tg("⚠️ 找到了地名，但目前缺乏分鐘數數據。")
 
     except Exception as e:
-        print(f"❌ 發生異常錯誤：{str(e)}")
+        send_tg(f"❌ 發生崩潰: {str(e)}")
 
 if __name__ == "__main__":
-    send_tsmc()
+    main()
