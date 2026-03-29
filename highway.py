@@ -4,7 +4,7 @@ from datetime import datetime
 # 從環境變數抓取金鑰
 TDX_ID = os.getenv("TDX_ID")
 TDX_SECRET = os.getenv("TDX_SECRET")
-BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
+BOT_TOKEN = os.getenv("TRAFFIC_BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_telegram(text):
