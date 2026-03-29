@@ -1,29 +1,32 @@
 import os, requests
+from datetime import datetime
 
-def get_token():
-    res = requests.post("https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", 
-                        data={'grant_type': 'client_credentials', 
-                              'client_id': os.getenv("TDX_ID"), 
-                              'client_secret': os.getenv("TDX_SECRET")})
-    return res.json().get('access_token')
+# 交通專用的 Token 與 TDX 金鑰
+token = os.getenv("TRAFFIC_TOKEN")
+chat_id = os.getenv("CHAT_ID")
+tdx_id = os.getenv("TDX_ID")
+tdx_secret = os.getenv("TDX_SECRET")
+
+def get_traffic():
+    # 1. 換取 TDX AccessToken
+    auth_res = requests.post("https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", 
+                            data={'grant_type': 'client_credentials', 'client_id': tdx_id, 'client_secret': tdx_secret})
+    access_token = auth_res.json().get('access_token')
+    
+    # 2. 抓取路況
+    url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/ControlPoint/N1?$format=JSON"
+    data = requests.get(url, headers={'authorization': f'Bearer {access_token}'}).json()
+    
+    msg = f"<b>🚗 國一路況 ({datetime.now().strftime('%H:%M')})</b>\n"
+    for item in data:
+        name = item.get('SectionName', '')
+        if "新竹" in name and "竹北" in name:
+            t = item['TravelTime'] // 60
+            status = "🚨 NG" if t >= 12 else "🟢 順暢"
+            msg += f"• {name}: <b>{t}分</b> ({status})\n"
+            
+    requests.post(f"https://api.telegram.org/bot{token}/sendMessage", 
+                  data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"})
 
 if __name__ == "__main__":
-    token = get_token()
-    bot_token = os.getenv("TRAFFIC_TOKEN")
-    chat_id = os.getenv("CHAT_ID")
-    
-    # 抓取國一旅行時間
-    data = requests.get("https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/ControlPoint/N1?$format=JSON", 
-                        headers={'authorization': f'Bearer {token}'}).json()
-    
-    targets = ["新竹-竹北", "竹北-新竹"]
-    msg = "<b>🚗 國一新竹段路況回報</b>\n"
-    
-    for item in data:
-        if item.get('SectionName') in targets:
-            min_time = item['TravelTime'] // 60
-            status = "🚨 <b>NG 擁塞</b>" if min_time >= 12 else "🟢 順暢"
-            msg += f"• {item['SectionName']}: <b>{min_time}分</b> ({status})\n"
-            
-    requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", 
-                  data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"})
+    get_traffic()
