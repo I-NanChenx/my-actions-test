@@ -25,6 +25,8 @@ jobs:
       - name: Run All Scripts
         env:
           # 這裡必須對應你截圖中的 Secret 名稱
+          TDX_ID: ${{ secrets.TDX_ID }}
+          TDX_SECRET: ${{ secrets.TDX_SECRET }}
           TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
