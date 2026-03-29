@@ -1,1 +1,9 @@
-traffic
+- name: Run Traffic Monitor
+        env:
+          # TDX API 金鑰
+          TDX_CLIENT_ID: ${{ secrets.TDX_CLIENT_ID }}
+          TDX_CLIENT_SECRET: ${{ secrets.TDX_CLIENT_SECRET }}
+          # 機器人金鑰
+          TRAFFIC_BOT_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python highway.py
