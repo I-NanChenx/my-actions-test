@@ -87,7 +87,6 @@ def main():
                     name = c.get('CCTVName', '') or c.get('Location', '') or str(c.get('CCTVID', ''))
                     
                     # 鎖定條件：必須包含 "N1" (國一)，且公里數為 91~95 開頭
-                    # 匹配例如：CCTV-N1-S-91.200-M
                     is_n1 = "N1" in name
                     is_hsinchu_area = any(f"-{km}." in name for km in range(91, 96))
                     
@@ -105,7 +104,6 @@ def main():
                                     send_tg_photo(f"📷 國一 {name} 即時畫面", img_file)
                                     cctv_count += 1
                                 else:
-                                    # 如果截圖失敗，印出原因
                                     err = result.stderr[-100:] if result.stderr else "截圖程式無回應"
                                     send_tg_text(f"⚠️ {name} 截圖失敗: {err}")
                             except Exception as e:
