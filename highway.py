@@ -26,8 +26,6 @@ def send_tg_photo(caption, img_path):
         send_tg_text(f"❌ 照片傳送失敗: {e}")
 
 def main():
-    send_tg_text("hello")
-
     try:
         # 1. 認證 Token
         auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
@@ -57,7 +55,13 @@ def main():
         live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
 
         tw_time = datetime.utcnow() + timedelta(hours=8)
-        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
+        
+        # 🌟 智慧判斷方向：中午 12 點前算早上(北上)，12 點後算下午(南下)
+        is_morning = tw_time.hour < 12
+        direction_cctv = "-N-" if is_morning else "-S-"
+        direction_zh = "北上 (往竹北)" if is_morning else "南下 (往新竹)"
+
+        msg = f"<b>🚗 國一 {direction_zh} 沿線路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
         found = False
         
         if isinstance(live_list, list):
@@ -66,54 +70,57 @@ def main():
                     sid = item.get('SectionID')
                     if sid in target_ids:
                         name = target_ids[sid]
-                        t = item.get('TravelTime', 0) // 60
-                        status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
-                        msg += f"• {name}: <b>{t}分</b> ({status})\n"
-                        found = True
+                        # 讓文字路況也優先顯示對應方向
+                        if (is_morning and "新竹到竹北" in name) or (not is_morning and "竹北到新竹" in name):
+                            t = item.get('TravelTime', 0) // 60
+                            status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+                            msg += f"• 區間預估: <b>{t}分</b> ({status})\n"
+                            found = True
         
         if found:
             send_tg_text(msg)
 
-        # 4. 抓攝影機 (使用破解後的 N1 公里數密碼)
+        # 4. 抓攝影機 (鎖定單一方向，91K 到 95K)
         cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
         cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
         cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
         
         if isinstance(cctv_list, list):
             cctv_count = 0
+            target_cctvs = []
             
             for c in cctv_list:
                 if isinstance(c, dict):
                     name = c.get('CCTVName', '') or c.get('Location', '') or str(c.get('CCTVID', ''))
+                    vid_url = c.get('VideoStreamURL', '')
                     
-                    # 鎖定條件：必須包含 "N1" (國一)，且公里數為 91~95 開頭
-                    is_n1 = "N1" in name
-                    is_hsinchu_area = any(f"-{km}." in name for km in range(91, 96))
+                    if not vid_url: continue
                     
-                    if is_n1 and is_hsinchu_area:
-                        vid_url = c.get('VideoStreamURL', '')
-                        if vid_url:
-                            img_file = f"cctv_{cctv_count}.jpg"
-                            try:
-                                # 呼叫 ffmpeg 截圖
-                                cmd = ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file]
-                                result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
-                                
-                                if result.returncode == 0 and os.path.exists(img_file):
-                                    # 成功截圖，發送照片
-                                    send_tg_photo(f"📷 國一 {name} 即時畫面", img_file)
-                                    cctv_count += 1
-                                else:
-                                    err = result.stderr[-100:] if result.stderr else "截圖程式無回應"
-                                    send_tg_text(f"⚠️ {name} 截圖失敗: {err}")
-                            except Exception as e:
-                                send_tg_text(f"⚠️ {name} 讀取異常: {str(e)}")
-                                
-                        if cctv_count >= 2: # 抓兩張就收工
-                            break
-
-            if cctv_count == 0:
-                send_tg_text("⚠️ 有找到攝影機清單，但截圖全部超時或失敗 (高公局可能擋海外 IP)。")
+                    # 鎖定國一 (N1)、且方向正確 (-N- 或 -S-)
+                    if "N1" in name and direction_cctv in name:
+                        for km in range(91, 96):
+                            if f"-{km}." in name:
+                                target_cctvs.append({'name': name, 'url': vid_url, 'km': km})
+                                break 
+            
+            # 依照公里數排序
+            target_cctvs = sorted(target_cctvs, key=lambda x: x['name'])
+            
+            # 開始截圖，最多抓 5 張
+            for cctv in target_cctvs:
+                img_file = f"cctv_{cctv_count}.jpg"
+                try:
+                    cmd = ["ffmpeg", "-y", "-i", cctv['url'], "-vframes", "1", "-q:v", "2", img_file]
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+                    
+                    if result.returncode == 0 and os.path.exists(img_file):
+                        send_tg_photo(f"📷 {cctv['name']}", img_file)
+                        cctv_count += 1
+                except Exception:
+                    pass 
+                    
+                if cctv_count >= 5: 
+                    break
 
     except Exception as e:
         send_tg_text(f"❌ 發生崩潰: {str(e)}")
