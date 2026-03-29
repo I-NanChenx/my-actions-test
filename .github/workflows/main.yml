@@ -1,0 +1,21 @@
+name: My First Action
+on: [push] # 當你提交代碼時觸發
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Run a simple script
+        run: |
+          print("Hello from GitHub Actions!")
+          import platform
+          print(f"Running on: {platform.system()} {platform.release()}")
+        shell: python
