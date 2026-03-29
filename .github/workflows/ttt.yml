@@ -1,4 +1,4 @@
-ame: Traffic Bot
+name: Traffic Bot
 
 on:
   workflow_dispatch:
