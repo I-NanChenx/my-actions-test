@@ -5,7 +5,7 @@ from datetime import datetime
 
 def send_tsmc():
     # 1. 抓取環境變數 (請確保 YAML 裡左邊名稱是 TSMC_TOKEN)
-    token = os.getenv("TRAFFIC_TOKEN")
+    token = os.getenv("TSMC_TOKEN")
     chat_id = os.getenv("CHAT_ID")
 
     print(f"🚀 啟動台監控 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -52,10 +52,10 @@ def send_tsmc():
         # 5. 組裝訊息
         msg = (f"{status_emoji} <b>TSMC (2330.TW) 策略報告</b>\n"
                f"────────────────\n"
-               f"• 最新股價：<b>{current_price}</b>\n"
-               f"• 月線(20MA)：{ma20}\n"
-               f"• 季線(60MA)：{ma60}\n"
-               f"• 半年線(120MA)：{ma120}\n"
+               f"• x：<b>{current_price}</b>\n"
+               f"• 月線(x)：{ma20}\n"
+               f"• 季線(x)：{ma60}\n"
+               f"• 半年線(x)：{ma120}\n"
                f"────────────────\n"
                f"💡 策略建議：\n{advice}")
 
