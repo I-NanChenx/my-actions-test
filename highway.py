@@ -9,45 +9,56 @@ def get_traffic():
 
     try:
         # 1. 取得 Token
-        auth_res = requests.post("https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", 
-                                data={'grant_type': 'client_credentials', 'client_id': tdx_id, 'client_secret': tdx_secret})
-        access_token = auth_res.json().get('access_token')
+        auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
+        auth_res = requests.post(auth_url, data={'grant_type': 'client_credentials', 'client_id': tdx_id, 'client_secret': tdx_secret})
+        auth_data = auth_res.json()
+        access_token = auth_data.get('access_token')
         
         if not access_token:
-            print(f"❌ Token 取得失敗：{auth_res.json()}")
+            print(f"❌ Token 取得失敗：{auth_data}")
             return
 
         # 2. 取得資料
         url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/ControlPoint/N1?$format=JSON"
-        data = requests.get(url, headers={'authorization': f'Bearer {access_token}'}).json()
+        headers = {'authorization': f'Bearer {access_token}'}
+        data = requests.get(url, headers=headers).json()
         
-        print(f"📊 成功抓取資料，共有 {len(data)} 個路段")
+        # 修正：確保 data 一定是列表，如果 API 只回傳一個物件就把它包成列表
+        if isinstance(data, dict):
+            # 如果回傳的是錯誤訊息 (例如 {"message": "..."})
+            if "message" in data:
+                print(f"❌ API 回傳錯誤：{data['message']}")
+                return
+            data = [data] # 將單一字典包進清單
+            
+        print(f"📊 成功獲取資料，包含 {len(data)} 筆路段")
 
-        msg = f"<b>🚗 交通連線測試 ({datetime.now().strftime('%H:%M')})</b>\n"
+        msg = f"<b>🚗 國一新竹段路況 ({datetime.now().strftime('%H:%M')})</b>\n"
+        msg += "────────────────\n"
         found = False
         
-        # 為了除錯，我們把前五個路段名稱印在 Log 裡看它長怎樣
-        for i, item in enumerate(data[:10]):
-            print(f"路段範例 {i}: {item.get('SectionName')}")
+        # 過濾目標關鍵字
+        targets = ["新竹", "竹北"]
 
         for item in data:
-            if isinstance(item, dict):
-                name = item.get('SectionName', '')
-                # 修改判斷邏輯：只要包含「新竹」或「竹北」其中一個字就先抓出來
-                if "新竹" in name or "竹北" in name:
-                    t = item.get('TravelTime', 0) // 60
-                    msg += f"• {name}: <b>{t}分</b>\n"
-                    found = True
+            name = item.get('SectionName', '')
+            # 只要路段名稱同時包含「新竹」與「竹北」
+            if all(k in name for k in targets):
+                t = item.get('TravelTime', 0) // 60
+                status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+                msg += f"• {name}: <b>{t}分</b> ({status})\n"
+                found = True
 
         if not found:
-            msg += "⚠️ 沒找到包含新竹/竹北的路段。"
-            print("❌ 關鍵字比對失敗，請檢查 Log 裡的路段名稱。")
+            msg += "⚠️ 沒找到包含新竹/竹北的路段。\n"
+            # 增加偵錯資訊，看看路段到底叫什麼
+            if len(data) > 0:
+                msg += f"<i>(API 第一筆路段：{data[0].get('SectionName', '無名稱')})</i>"
 
-        # 3. 強制發送訊息 (測試用)
-        res = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", 
-                            data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"})
-        
-        print(f"Telegram 回應: {res.status_code}, {res.text}")
+        # 3. 發送訊息
+        requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", 
+                     data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"})
+        print("✅ 任務執行完畢")
 
     except Exception as e:
         print(f"❌ 發生異常：{str(e)}")
