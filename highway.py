@@ -1,17 +1,14 @@
-import os
-import requests
+import os, requests, yfinance as yf
 from datetime import datetime
 
-# 1. 抓取環境變數 (加上 .strip() 防止隱形空格)
+# 1. 抓取環境變數 (使用你要求的 ID)
 TDX_ID = os.getenv("TDX_ID", "").strip()
 TDX_SECRET = os.getenv("TDX_SECRET", "").strip()
-BOT_TOKEN = os.getenv("TRAFFIC_TOKEN", "").strip()
+TRAFFIC_TOKEN = os.getenv("TRAFFIC_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
 
 def send_tg(text):
-    """發送訊息至 Telegram"""
-    if not BOT_TOKEN or not CHAT_ID: return
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{TRAFFIC_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
     try:
         requests.post(url, data=payload, timeout=10)
@@ -19,62 +16,69 @@ def send_tg(text):
         pass
 
 def main():
-    print("--- 任務啟動 ---")
-    send_tg("🚀 <b>最後衝刺：核心診斷啟動</b>\n正在向 TDX 請求國道路況資料...")
-
-    # 步驟 1: 取得 Token
+    print("--- 深度診斷模式啟動 ---")
+    
+    # 第一階段：認證取得 Token
     try:
         auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
         auth_res = requests.post(auth_url, data={
             'grant_type': 'client_credentials', 'client_id': TDX_ID, 'client_secret': TDX_SECRET
         }, timeout=10)
         token = auth_res.json().get('access_token')
-        if not token:
-            send_tg("❌ Token 取得失敗，請確認你的 TDX_ID 和 TDX_SECRET 是否貼反了。")
-            return
     except Exception as e:
-        send_tg(f"❌ 認證異常: {str(e)}")
+        send_tg(f"❌ 認證階段崩潰: {str(e)}")
         return
 
-    # 步驟 2: 請求 API (我們改用最標準、最穩定的總表路徑)
-    # 這個路徑是 TDX 官方最建議的入口
-    api_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/Section?$format=JSON"
-    headers = {'authorization': f'Bearer {token}', 'Accept': 'application/json'}
+    # 第二階段：地毯式嘗試不同 API 路徑 (解決 404 的必殺技)
+    # 這裡列出 TDX 常見的三種路段入口
+    test_urls = [
+        "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/Section/N1?$format=JSON",
+        "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/Section?$format=JSON",
+        "https://tdx.transportdata.tw/api/basic/v2/Road/Highway/TravelTime/ControlPoint?$format=JSON"
+    ]
     
+    final_data = None
+    for url in test_urls:
+        print(f"嘗試路徑: {url}")
+        res = requests.get(url, headers={'authorization': f'Bearer {token}'}, timeout=15)
+        if res.status_code == 200:
+            final_data = res.json()
+            break
+            
+    if not final_data:
+        send_tg("❌ <b>掃描全數失敗 (404)</b>\n這極大機率是你的 TDX 帳號尚未手動訂閱『國道』資料集。請登入 TDX 官網確認『國道』權限是否已開啟。")
+        return
+
+    # 第三階段：股市資產報告 (既然路況卡住，先看資產壓壓驚)
+    stock_msg = ""
     try:
-        res = requests.get(api_url, headers=headers, timeout=15)
-        
-        # 如果不是 200 OK，把 TDX 的真心話吐出來
-        if res.status_code != 200:
-            error_msg = f"❌ <b>TDX 拒絕請求 (代碼: {res.status_code})</b>\n"
-            error_msg += f"原因：<code>{res.text}</code>\n"
-            error_msg += "💡 <i>如果是 403，代表你的 TDX 帳號還沒訂閱『國道』資料。</i>"
-            send_tg(error_msg)
-            return
+        stocks = yf.Tickers("2891.TW 00878.TW")
+        # 計算 38 張中信金與 80 張 00878
+        v2891 = stocks.tickers["2891.TW"].fast_info.last_price * 38000
+        v878 = stocks.tickers["00878.TW"].fast_info.last_price * 80000
+        stock_msg = (f"<b>📈 資產市值：{(v2891 + v878):,.0f} 元</b>\n"
+                     f"• 中信金 (38張): {v2891:,.0f}\n"
+                     f"• 00878 (80張): {v878:,.0f}\n"
+                     f"────────────────\n")
+    except:
+        stock_msg = "⚠️ 股市資料暫時抓不到。\n"
 
-        data = res.json()
-        
-        # 步驟 3: 過濾新竹段
-        msg = f"<b>🚗 國一新竹段路況 ({datetime.now().strftime('%H:%M')})</b>\n────────────────\n"
-        found = False
-        
-        for item in data:
-            name = item.get('SectionName', '')
-            if "新竹" in name and "竹北" in name:
-                t = item.get('TravelTime', 0) // 60
-                status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
-                msg += f"• {name}: <b>{t}分</b> ({status})\n"
-                found = True
-        
-        if found:
-            send_tg(msg)
-        else:
-            # 沒找到資料，但連線是成功的，印出第一筆地名幫忙診斷
-            sample = data[0].get('SectionName', '無名稱') if data else "無資料"
-            send_tg(f"⚠️ 連線成功但沒找到新竹段。範例資料地名：{sample}")
-
-    except Exception as e:
-        send_tg(f"❌ 執行崩潰：{str(e)}")
+    # 第四階段：過濾路況 (相容不同 API 的地名欄位)
+    msg = f"<b>🚗 國一新竹段即時路況</b>\n"
+    found = False
+    for item in final_data:
+        name = item.get('SectionName') or item.get('ControlPointName') or ''
+        if "新竹" in name and "竹北" in name:
+            t = item.get('TravelTime', 0) // 60
+            status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
+            msg += f"• {name}: <b>{t}分</b> ({status})\n"
+            found = True
+            
+    if not found:
+        msg += f"⚠️ 已連線但沒找到新竹段，範例地名：{final_data[0].get('SectionName', '無')}"
+    
+    send_tg(stock_msg + msg)
+    print("--- 任務完成 ---")
 
 if __name__ == "__main__":
     main()
