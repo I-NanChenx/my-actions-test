@@ -1,17 +1,14 @@
-name: Stock Monitor Automation
+name: Separate Stock Monitors
 
 on:
   push:
-    branches: [ "main" ]
   schedule:
-    # 台灣時間週一至週五 09:05 (UTC 01:05)
-    - cron: '5 1 * * 1-5'
-    # 台灣時間週一至週五 13:35 (UTC 05:35)
-    - cron: '35 5 * * 1-5'
+    - cron: '5 1 * * 1-5'  # 台灣 09:05
+    - cron: '35 5 * * 1-5' # 台灣 13:35
   workflow_dispatch:
 
 jobs:
-  run-monitor:
+  run-all-monitors:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,11 +22,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests yfinance
 
-      - name: Run Python Script
+      - name: Run All Scripts
         env:
-          # 將截圖中的 Secrets 對應到 Python 讀取的變數
+          # 這裡必須對應你截圖中的 Secret 名稱
           TSMC_TOKEN: ${{ secrets.TSMC_BOT_TOKEN }}
           ETF878_TOKEN: ${{ secrets.I00878_BOT_TOKEN }}
           ETF56_TOKEN: ${{ secrets.I0056_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python monitor.py
+        run: |
+          python tsmc.py
+          python etf878.py
+          python etf56.py
