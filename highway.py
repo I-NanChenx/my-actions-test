@@ -1,135 +1,32 @@
 import os
 import requests
-from datetime import datetime, timedelta
 
-# 1. 抓取環境變數
-TDX_ID = os.getenv("TDX_ID")
-TDX_SECRET = os.getenv("TDX_SECRET")
+print("=== 🚨 程式開始執行 🚨 ===")
+
+# 1. 檢查環境變數有沒有成功抓到
 BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
+print(f"👉 Token 讀取狀態: {'✅ 成功' if BOT_TOKEN else '❌ 失敗 (沒有抓到 TRAFFIC_TOKEN)'}")
+print(f"👉 Chat ID 讀取狀態: {'✅ 成功' if CHAT_ID else '❌ 失敗 (沒有抓到 CHAT_ID)'}")
+
 def send_tg(text):
-    if not BOT_TOKEN or not CHAT_ID: return
+    print(f"準備發送訊息給 Telegram: {text}")
+    if not BOT_TOKEN or not CHAT_ID:
+        print("❌ 因為缺少 Token 或 ID，放棄發送！")
+        return
+        
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    print(f"正在呼叫網址: {url[:35]}... (隱藏後半段)")
+    
     try:
-        requests.post(url, data={"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=10)
-    except:
-        pass
-
-def main():
-    # 鐵律：先打招呼
-    send_tg("hello")
-
-    try:
-        # 步驟 1: 取得 Token
-        auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
-        auth_res = requests.post(auth_url, data={
-            'grant_type': 'client_credentials', 'client_id': TDX_ID, 'client_secret': TDX_SECRET
-        }, timeout=10)
-        token = auth_res.json().get('access_token')
-        
-        if not token:
-            send_tg("❌ Token 取得失敗")
-            return
-            
-        headers = {'authorization': f'Bearer {token}'}
-
-        # 步驟 2: 抓取「靜態路段字典」
-        dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
-        dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
-        
-        dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
-        if not isinstance(dict_list, list): return
-
-        target_ids = {}
-        for item in dict_list:
-            if isinstance(item, dict):
-                name = item.get('SectionName', '')
-                if "新竹" in name and "竹北" in name:
-                    target_ids[item.get('SectionID')] = name
-                
-        if not target_ids: return
-
-        # 步驟 3: 抓取「即時路況」
-        live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
-        live_res = requests.get(live_url, headers=headers, timeout=15).json()
-        
-        live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
-        if not isinstance(live_list, list): return
-
-        # 🔥 修正時區：UTC 時間加上 8 小時
-        tw_time = datetime.utcnow() + timedelta(hours=8)
-        
-        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
-        found = False
-        
-        for item in live_list:
-            if isinstance(item, dict):
-                sid = item.get('SectionID')
-                if sid in target_ids:
-                    name = target_ids[sid]
-                    t = item.get('TravelTime', 0) // 60
-                    # 塞車門檻設定：超過 12 分鐘亮紅燈
-                    status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
-                    msg += f"• {name}: <b>{t}分</b> ({status})\n"
-                    found = True
-                
-        if found:
-            send_tg(msg)
-        else:
-            send_tg("⚠️ 找到了地名，但目前缺乏分鐘數數據。")
-
+        res = requests.post(url, data={"chat_id": CHAT_ID, "text": text}, timeout=10)
+        print(f"TG 伺服器回應狀態碼: {res.status_code}")
+        print(f"TG 伺服器詳細回應: {res.text}")
     except Exception as e:
-        send_tg(f"❌ 發生崩潰: {str(e)}")
+        print(f"❌ 網路連線 Telegram 發生嚴重錯誤: {e}")
 
-if __name__ == "__main__":
-    main()        # 步驟 2: 抓取「靜態路段字典」
-        dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
-        dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
-        
-        dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
-        if not isinstance(dict_list, list): return
+# 鐵律：先打招呼
+send_tg("hello")
 
-        target_ids = {}
-        for item in dict_list:
-            if isinstance(item, dict):
-                name = item.get('SectionName', '')
-                if "新竹" in name and "竹北" in name:
-                    target_ids[item.get('SectionID')] = name
-                
-        if not target_ids: return
-
-        # 步驟 3: 抓取「即時路況」
-        live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
-        live_res = requests.get(live_url, headers=headers, timeout=15).json()
-        
-        live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
-        if not isinstance(live_list, list): return
-
-        # 🔥 修正時區：UTC 時間加上 8 小時
-        tw_time = datetime.utcnow() + timedelta(hours=8)
-        
-        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
-        found = False
-        
-        for item in live_list:
-            if isinstance(item, dict):
-                sid = item.get('SectionID')
-                if sid in target_ids:
-                    name = target_ids[sid]
-                    t = item.get('TravelTime', 0) // 60
-                    # 塞車門檻設定：超過 12 分鐘亮紅燈
-                    status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
-                    msg += f"• {name}: <b>{t}分</b> ({status})\n"
-                    found = True
-                
-        if found:
-            send_tg(msg)
-        else:
-            send_tg("⚠️ 找到了地名，但目前缺乏分鐘數數據。")
-
-    except Exception as e:
-        send_tg(f"❌ 發生崩潰: {str(e)}")
-
-if __name__ == "__main__":
-    main()
+print("=== 🏁 程式執行結束 🏁 ===")
