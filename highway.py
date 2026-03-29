@@ -3,6 +3,7 @@ import requests
 import subprocess
 from datetime import datetime, timedelta
 
+# 1. 環境變數
 TDX_ID = os.getenv("TDX_ID")
 TDX_SECRET = os.getenv("TDX_SECRET")
 BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
@@ -21,14 +22,14 @@ def send_tg_photo(caption, img_path):
     try:
         with open(img_path, "rb") as f:
             requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
-    except:
-        pass
+    except Exception as e:
+        print(f"照片傳送失敗: {e}")
 
 def main():
     send_tg_text("hello")
 
     try:
-        # 1. 認證
+        # 1. 認證 Token
         auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
         auth_res = requests.post(auth_url, data={
             'grant_type': 'client_credentials', 'client_id': TDX_ID, 'client_secret': TDX_SECRET
@@ -73,29 +74,48 @@ def main():
         if found:
             send_tg_text(msg)
 
-        # 4. 抓攝影機
+        # 4. 抓攝影機 (使用破解後的 N1 公里數密碼)
         cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
         cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
         cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
         
         if isinstance(cctv_list, list):
-            sample_names = [] 
+            cctv_count = 0
             
             for c in cctv_list:
                 if isinstance(c, dict):
-                    # 把能抓到的名字或 ID 通通抓出來
-                    name = c.get('CCTVName', '') or c.get('Location', '') or str(c.get('CCTVID', '未知ID'))
+                    name = c.get('CCTVName', '') or c.get('Location', '') or str(c.get('CCTVID', ''))
                     
-                    # 這次不限制任何條件！只要前 5 支的名字！
-                    if len(sample_names) < 5 and name:
-                        sample_names.append(name)
-            
-            # 因為目前還不知道正確關鍵字，我們直接印出範例清單
-            debug_msg = "⚠️ <b>攝影機偵錯模式</b>\n💡 TDX 官方命名範例如下，請看這 5 支的名字：\n"
-            for s in sample_names:
-                debug_msg += f"• <code>{s}</code>\n"
-            
-            send_tg_text(debug_msg)
+                    # 鎖定條件：必須包含 "N1" (國一)，且公里數為 91~95 開頭
+                    # 匹配例如：CCTV-N1-S-91.200-M
+                    is_n1 = "N1" in name
+                    is_hsinchu_area = any(f"-{km}." in name for km in range(91, 96))
+                    
+                    if is_n1 and is_hsinchu_area:
+                        vid_url = c.get('VideoStreamURL', '')
+                        if vid_url:
+                            img_file = f"cctv_{cctv_count}.jpg"
+                            try:
+                                # 呼叫 ffmpeg 截圖
+                                cmd = ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file]
+                                result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+                                
+                                if result.returncode == 0 and os.path.exists(img_file):
+                                    # 成功截圖，發送照片
+                                    send_tg_photo(f"📷 國一 {name} 即時畫面", img_file)
+                                    cctv_count += 1
+                                else:
+                                    # 如果截圖失敗，印出原因
+                                    err = result.stderr[-100:] if result.stderr else "截圖程式無回應"
+                                    send_tg_text(f"⚠️ {name} 截圖失敗: {err}")
+                            except Exception as e:
+                                send_tg_text(f"⚠️ {name} 讀取異常: {str(e)}")
+                                
+                        if cctv_count >= 2: # 抓兩張就收工
+                            break
+
+            if cctv_count == 0:
+                send_tg_text("⚠️ 有找到攝影機清單，但截圖全部超時或失敗 (高公局可能擋海外 IP)。")
 
     except Exception as e:
         send_tg_text(f"❌ 發生崩潰: {str(e)}")
