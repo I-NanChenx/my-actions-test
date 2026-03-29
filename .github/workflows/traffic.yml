@@ -2,9 +2,12 @@ name: Highway Traffic Monitor
 
 on:
   push:
+    branches: [ "main" ]
   schedule:
     # 台灣時間平日早上 07:35 (UTC 23:35)
     - cron: '35 23 * * 1-5'
+    # 台灣時間平日早上 08:05 (UTC 00:05)
+    - cron: '5 0 * * 1-5'
   workflow_dispatch: # 讓你可以點擊按鈕手動測試
 
 jobs:
@@ -20,13 +23,14 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
+        # ⚠️ 這步非常重要，否則程式會因為找不到 requests 而當機
         run: pip install requests
 
       - name: Run Traffic Script
         env:
-          # 這裡對應你在 GitHub Secrets 存的金鑰名稱
-          TDX_CLIENT_ID: ${{ secrets.TDX_CLIENT_ID }}
-          TDX_CLIENT_SECRET: ${{ secrets.TDX_CLIENT_SECRET }}
-          TRAFFIC_BOT_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
+          # 左邊是 Python 程式抓取的名稱，右邊是你在 GitHub 存的 Secret 名稱
+          TDX_ID: ${{ secrets.TDX_CLIENT_ID }}
+          TDX_SECRET: ${{ secrets.TDX_CLIENT_SECRET }}
+          TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python highway.py
