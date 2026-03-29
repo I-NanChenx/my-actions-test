@@ -23,8 +23,8 @@ jobs:
 
       - name: Run Traffic Script
         env:
-          TDX_ID: ${{ secrets.TDX_ID }}
-          TDX_SECRET: ${{ secrets.TDX_SECRET }}
-          TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TDX_ID: ${{ secrets.TDX_CLIENT_ID }}
+          TDX_SECRET: ${{ secrets.TDX_CLIENT_SECRET }}
+          TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python highway.py
