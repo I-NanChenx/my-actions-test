@@ -9,10 +9,12 @@ BOT_TOKEN = os.getenv("TRAFFIC_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_tg(text):
+    """恢復最原始、絕對會通的發送機制"""
     if not BOT_TOKEN or not CHAT_ID: return
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
     try:
-        requests.post(url, data={"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=10)
+        requests.post(url, data=payload, timeout=10)
     except:
         pass
 
@@ -57,9 +59,7 @@ def main():
         live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
         if not isinstance(live_list, list): return
 
-        # 🔥 修正時區：UTC 時間加上 8 小時
         tw_time = datetime.utcnow() + timedelta(hours=8)
-        
         msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
         found = False
         
@@ -69,11 +69,31 @@ def main():
                 if sid in target_ids:
                     name = target_ids[sid]
                     t = item.get('TravelTime', 0) // 60
-                    # 塞車門檻設定：超過 12 分鐘亮紅燈
                     status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
                     msg += f"• {name}: <b>{t}分</b> ({status})\n"
                     found = True
-                
+
+        # 步驟 4: 安全抓取 CCTV 攝影機 (加上 try-except，就算壞掉也不影響主路況)
+        try:
+            cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
+            cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
+            cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
+            
+            if isinstance(cctv_list, list):
+                msg += "────────────────\n<b>📷 沿線攝影機連結</b>\n"
+                cctv_count = 0
+                for c in cctv_list:
+                    if isinstance(c, dict):
+                        name = c.get('CCTVName', '') or c.get('Location', '')
+                        if "國道1號" in name and ("新竹" in name or "竹北" in name):
+                            vid_url = c.get('VideoStreamURL', '')
+                            if vid_url:
+                                msg += f"• <a href='{vid_url}'>{name}</a>\n"
+                                cctv_count += 1
+                                if cctv_count >= 2: break
+        except:
+            pass # 攝影機抓失敗就默默跳過，確保上面的分鐘數能送出去
+
         if found:
             send_tg(msg)
         else:
