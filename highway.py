@@ -1,6 +1,6 @@
 import os
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 1. 抓取環境變數
 TDX_ID = os.getenv("TDX_ID")
@@ -17,7 +17,7 @@ def send_tg(text):
         pass
 
 def main():
-    # 鐵律 1：先打招呼
+    # 鐵律：先打招呼
     send_tg("hello")
 
     try:
@@ -29,7 +29,7 @@ def main():
         token = auth_res.json().get('access_token')
         
         if not token:
-            send_tg("❌ Token 取得失敗，請檢查金鑰。")
+            send_tg("❌ Token 取得失敗")
             return
             
         headers = {'authorization': f'Bearer {token}'}
@@ -38,35 +38,29 @@ def main():
         dict_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Section/Freeway?$format=JSON"
         dict_res = requests.get(dict_url, headers=headers, timeout=10).json()
         
-        # 🛡️ 防禦機制：確保回傳的是 List，否則直接印出錯誤
         dict_list = dict_res.get('Sections', dict_res) if isinstance(dict_res, dict) else dict_res
-        if not isinstance(dict_list, list):
-            send_tg(f"❌ TDX 字典庫異常，回傳內容：\n<code>{str(dict_res)[:100]}</code>")
-            return
+        if not isinstance(dict_list, list): return
 
         target_ids = {}
         for item in dict_list:
-            # 🛡️ 防禦機制：確保 item 是字典才操作
             if isinstance(item, dict):
                 name = item.get('SectionName', '')
                 if "新竹" in name and "竹北" in name:
                     target_ids[item.get('SectionID')] = name
                 
-        if not target_ids:
-            send_tg("⚠️ 字典庫裡找不到『新竹-竹北』。官方可能修改了命名。")
-            return
+        if not target_ids: return
 
         # 步驟 3: 抓取「即時路況」
         live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
         live_res = requests.get(live_url, headers=headers, timeout=15).json()
         
-        # 🛡️ 防禦機制：確保回傳的是 List
         live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
-        if not isinstance(live_list, list):
-            send_tg(f"❌ TDX 即時庫異常，回傳內容：\n<code>{str(live_res)[:100]}</code>")
-            return
+        if not isinstance(live_list, list): return
 
-        msg = f"<b>🚗 國一新竹段最新路況 ({datetime.now().strftime('%H:%M')})</b>\n────────────────\n"
+        # 🔥 修正時區：UTC 時間加上 8 小時
+        tw_time = datetime.utcnow() + timedelta(hours=8)
+        
+        msg = f"<b>🚗 國一新竹段最新路況 ({tw_time.strftime('%H:%M')})</b>\n────────────────\n"
         found = False
         
         for item in live_list:
@@ -75,6 +69,7 @@ def main():
                 if sid in target_ids:
                     name = target_ids[sid]
                     t = item.get('TravelTime', 0) // 60
+                    # 塞車門檻設定：超過 12 分鐘亮紅燈
                     status = "🚨 <b>NG 擁塞</b>" if t >= 12 else "🟢 順暢"
                     msg += f"• {name}: <b>{t}分</b> ({status})\n"
                     found = True
@@ -82,7 +77,7 @@ def main():
         if found:
             send_tg(msg)
         else:
-            send_tg("⚠️ 找到了地名，但即時庫裡沒有當下的分鐘數。")
+            send_tg("⚠️ 找到了地名，但目前缺乏分鐘數數據。")
 
     except Exception as e:
         send_tg(f"❌ 發生崩潰: {str(e)}")
