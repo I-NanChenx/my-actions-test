@@ -23,7 +23,7 @@ def send_tg_photo(caption, img_path):
         with open(img_path, "rb") as f:
             requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
     except Exception as e:
-        print(f"照片傳送失敗: {e}")
+        send_tg_text(f"❌ 照片傳送失敗: {e}")
 
 def main():
     send_tg_text("hello")
