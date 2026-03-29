@@ -5,7 +5,7 @@ from datetime import datetime
 
 def send_tsmc():
     # 1. 抓取環境變數 (請確保 YAML 裡左邊名稱是 TSMC_TOKEN)
-    token = os.getenv("TSMC_TOKEN")
+    token = os.getenv("TRAFFIC_TOKEN")
     chat_id = os.getenv("CHAT_ID")
 
     print(f"🚀 啟動台監控 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
