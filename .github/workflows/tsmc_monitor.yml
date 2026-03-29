@@ -1,1 +1,30 @@
+name: TSMC Stock Monitor
 
+on:
+  push:
+  schedule:
+    - cron: '5 1 * * 1-5'  # 台灣週一至週五 09:05
+    - cron: '35 5 * * 1-5' # 台灣週一至週五 13:35
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests yfinance
+
+      - name: Run TSMC Script
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        # 這裡已經改為 TSMC.py
+        run: python TSMC.py
