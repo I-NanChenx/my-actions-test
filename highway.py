@@ -20,11 +20,9 @@ def send_tg_photo(caption, img_path):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
     try:
         with open(img_path, "rb") as f:
-            res = requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
-            if res.status_code != 200:
-                send_tg_text(f"❌ 照片上傳失敗: {res.text}")
-    except Exception as e:
-        send_tg_text(f"❌ 檔案讀取失敗: {e}")
+            requests.post(url, data={"chat_id": CHAT_ID, "caption": caption}, files={"photo": f}, timeout=15)
+    except:
+        pass
 
 def main():
     send_tg_text("hello")
@@ -52,7 +50,7 @@ def main():
                     if "新竹" in name and "竹北" in name:
                         target_ids[item.get('SectionID')] = name
 
-        # 3. 抓路況
+        # 3. 抓即時路況分鐘數
         live_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/Live/Freeway?$format=JSON"
         live_res = requests.get(live_url, headers=headers, timeout=15).json()
         live_list = live_res.get('LiveTraffics', live_res) if isinstance(live_res, dict) else live_res
@@ -75,47 +73,29 @@ def main():
         if found:
             send_tg_text(msg)
 
-        # 4. 抓攝影機 (破解官方命名)
+        # 4. 抓攝影機
         cctv_url = "https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/Freeway?$format=JSON"
         cctv_res = requests.get(cctv_url, headers=headers, timeout=10).json()
         cctv_list = cctv_res.get('CCTVs', cctv_res) if isinstance(cctv_res, dict) else cctv_res
         
         if isinstance(cctv_list, list):
-            cctv_count = 0
-            sample_names = [] # 拿來偷看官方命名的清單
+            sample_names = [] 
             
             for c in cctv_list:
                 if isinstance(c, dict):
-                    name = c.get('CCTVName', '') or c.get('Location', '')
+                    # 把能抓到的名字或 ID 通通抓出來
+                    name = c.get('CCTVName', '') or c.get('Location', '') or str(c.get('CCTVID', '未知ID'))
                     
-                    # 收集國道一號的攝影機名字當範本
-                    if "國道1號" in name or "國1" in name:
-                        if len(sample_names) < 5:
-                            sample_names.append(name)
-                            
-                    # 原本的過濾條件
-                    is_target_area = any(k in name for k in ["91", "92", "93", "94", "95"])
-                    if ("國1" in name or "國道1" in name or "國道一" in name) and is_target_area:
-                        vid_url = c.get('VideoStreamURL', '')
-                        if vid_url:
-                            img_file = f"cctv_{cctv_count}.jpg"
-                            try:
-                                cmd = ["ffmpeg", "-y", "-i", vid_url, "-vframes", "1", "-q:v", "2", img_file]
-                                result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
-                                if result.returncode == 0 and os.path.exists(img_file):
-                                    send_tg_photo(f"📷 {name}", img_file)
-                                    cctv_count += 1
-                            except:
-                                pass
-                        if cctv_count >= 2:
-                            break
+                    # 這次不限制任何條件！只要前 5 支的名字！
+                    if len(sample_names) < 5 and name:
+                        sample_names.append(name)
             
-            # 破解時刻：如果沒抓到照片，就把官方命名印出來！
-            if cctv_count == 0:
-                debug_msg = "⚠️ 找不到 91K~95K 的攝影機。\n💡 <b>TDX 官方命名範例如下，請看他們到底怎麼取名：</b>\n"
-                for s in sample_names:
-                    debug_msg += f"• <code>{s}</code>\n"
-                send_tg_text(debug_msg)
+            # 因為目前還不知道正確關鍵字，我們直接印出範例清單
+            debug_msg = "⚠️ <b>攝影機偵錯模式</b>\n💡 TDX 官方命名範例如下，請看這 5 支的名字：\n"
+            for s in sample_names:
+                debug_msg += f"• <code>{s}</code>\n"
+            
+            send_tg_text(debug_msg)
 
     except Exception as e:
         send_tg_text(f"❌ 發生崩潰: {str(e)}")
