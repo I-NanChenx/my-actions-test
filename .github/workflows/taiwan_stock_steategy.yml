@@ -27,4 +27,4 @@ jobs:
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       
-        run: python taiwan_stock_steategy.yml.py
+        run: python taiwan_stock_steategy.py
