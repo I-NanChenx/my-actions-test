@@ -19,9 +19,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+     - name: Install dependencies (一次裝好所有套件)
         run: |
-          pip install requests twstock
+          python -m pip install --upgrade pip
+          pip install requests yfinance twstock
 
       - name: Run Stock Script
         env:
