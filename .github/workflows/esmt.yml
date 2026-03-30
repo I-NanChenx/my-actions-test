@@ -26,7 +26,6 @@ jobs:
       - name: Run Stock Script
         env:
           # 重要：請確認你的 GitHub Secrets 名字是否跟這裡一樣
-          ESMT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          
+          TSMC_TOKEN: ${{ secrets.TSMC_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}          
         run: python esmt.py
