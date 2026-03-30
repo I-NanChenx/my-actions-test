@@ -30,6 +30,7 @@ jobs:
           ETF56_TOKEN: ${{ secrets.I0056_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
+          python esmt.py
           python etf878.py
           python tsmc.py
           python etf56.py
