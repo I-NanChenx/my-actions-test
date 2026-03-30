@@ -1,0 +1,31 @@
+name: Stock Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 台灣時間 週一至週五 09:00 - 13:35 -> UTC 01:00 - 05:35
+    # 每 5 分鐘跑一次
+    - cron: '*/5 1-5 * * 1-5'
+
+jobs:
+  run-stock-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests twstock
+
+      - name: Run Stock Script
+        env:
+          # 重要：請確認你的 GitHub Secrets 名字是否跟這裡一樣
+          TG_BOT_TOKEN: ${{ secrets.TRAFFIC_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python esmt.py
