@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timezone, timedelta
 
 # ================= 參數設定區 =================
-# 依照要求使用這兩個變數名稱
+# 依照要求使用這兩個變數名稱，分別對應 GitHub Secrets
 token = os.getenv("TSMC_TOKEN")
 chat_id = os.getenv("CHAT_ID")
 
@@ -35,6 +35,9 @@ def send_tg_message(message):
         print(f"發送 TG 失敗: {e}")
 
 def main():
+    # 🌟 第一步：先打招呼確認連線
+    send_tg_message("ESMT hello")
+    
     try:
         # 抓取即時報價
         realtime_data = twstock.realtime.get(STOCK_ID)
@@ -74,7 +77,7 @@ def main():
 
 if __name__ == "__main__":
     now = datetime.now(TW_TZ)
-    # 僅在平日週一至週五執行
+    # 僅在平日週一至週五執行 (現在是週一晚上，所以會執行)
     if now.weekday() < 5:
         main()
     else:
