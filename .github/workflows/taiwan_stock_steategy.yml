@@ -32,7 +32,11 @@ jobs:
           ETF56_TOKEN: ${{ secrets.I0056_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python esmt.py
-          python etf878.py
-          python tsmc.py
-          python etf56.py
+          # 每支獨立執行：任一支失敗不會中斷後面的腳本
+          status=0
+          for s in esmt.py etf878.py tsmc.py etf56.py; do
+            echo "::group::$s"
+            python "$s" || { echo "::warning::$s 執行失敗 (exit $?)"; status=1; }
+            echo "::endgroup::"
+          done
+          exit $status
