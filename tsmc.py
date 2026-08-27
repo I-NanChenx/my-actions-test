@@ -1,35 +1,37 @@
 import os
 import requests
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+TW_TZ = timezone(timedelta(hours=8))
 
 def send_tsmc():
     # 1. 抓取環境變數 (請確保 YAML 裡左邊名稱是 TSMC_TOKEN)
     token = os.getenv("TSMC_TOKEN")
     chat_id = os.getenv("CHAT_ID")
 
-    print(f"🚀 啟動台監控 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"🚀 [tsmc] 啟動台積電(2330)監控 - {datetime.now(TW_TZ).strftime('%Y-%m-%d %H:%M')} (台灣時間)")
 
     if not token or not chat_id:
-        print(f"❌ 錯誤：找不到 TSMC_TOKEN({bool(token)}) 或 CHAT_ID({bool(chat_id)})")
+        print(f"❌ [tsmc] 錯誤：找不到 TSMC_TOKEN({bool(token)}) 或 CHAT_ID({bool(chat_id)})")
         return
 
     try:
         # 2. 抓取資料 (使用 2330.TW)
-        print("--- 步驟 1: 正在從 Yahoo Finance 抓取資料 ---")
+        print("--- [tsmc] 步驟 1: 正在從 Yahoo Finance 抓取資料 ---")
         stock = yf.Ticker("2330.TW")
         # 抓取 150 天資料以計算 120MA
         hist = stock.history(period="150d")
 
         if hist.empty:
-            print("❌ 錯誤：無法取得台積電歷史資料 (DataFrame is empty)。")
+            print("❌ [tsmc] 錯誤：無法取得台積電歷史資料 (DataFrame is empty)。")
             # 嘗試抓取即時價格作為備案
             price = stock.fast_info.last_price
             print(f"💡 備案：僅抓取到即時價格 {price}，但無法計算均線。")
             return
 
         # 3. 計算數據
-        print("--- 步驟 2: 正在計算均線數據 ---")
+        print("--- [tsmc] 步驟 2: 正在計算均線數據 ---")
         current_price = round(hist['Close'].iloc[-1], 2)
         ma20 = round(hist['Close'].rolling(window=20).mean().iloc[-1], 2)
         ma60 = round(hist['Close'].rolling(window=60).mean().iloc[-1], 2)
@@ -60,17 +62,17 @@ def send_tsmc():
                f"💡 策略建議：\n{advice}")
 
         # 6. 發送 Telegram
-        print("--- 步驟 3: 正在發送 Telegram 訊息 ---")
+        print("--- [tsmc] 步驟 3: 正在發送 Telegram 訊息 ---")
         url = f"https://api.telegram.org/bot{token}/sendMessage"
         res = requests.post(url, data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
         
         if res.status_code == 200:
-            print("✅ 訊息發送成功！")
+            print("✅ [tsmc] 訊息發送成功！")
         else:
-            print(f"❌ Telegram 發送失敗：{res.text}")
+            print(f"❌ [tsmc] Telegram 發送失敗：{res.text}")
 
     except Exception as e:
-        print(f"❌ 發生異常錯誤：{str(e)}")
+        print(f"❌ [tsmc] 發生異常錯誤：{str(e)}")
 
 if __name__ == "__main__":
     send_tsmc()
