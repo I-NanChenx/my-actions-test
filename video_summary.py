@@ -5,10 +5,9 @@ from datetime import datetime, timezone, timedelta
 
 TW_TZ = timezone(timedelta(hours=8))
 
-VIDEO_URL = os.getenv("VIDEO_URL")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 BOT_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+SUMMARY_FILE = os.getenv("SUMMARY_FILE") or "latest_summary.txt"
 
 TELEGRAM_LIMIT = 3800  # 留一些餘裕，避開 Telegram 4096 字元上限
 
@@ -47,60 +46,24 @@ def split_message(text, limit=TELEGRAM_LIMIT):
     return chunks
 
 
-def summarize_video(video_url):
-    from google import genai
-    from google.genai import types
-
-    client = genai.Client(api_key=GEMINI_API_KEY)
-
-    prompt = (
-        "請觀看這部影片，並用繁體中文整理成清楚的重點筆記/摘要，"
-        "適合想快速掌握影片內容的讀者閱讀。"
-        "請包含：影片主旨、關鍵重點或數據、結論與建議。"
-        "使用簡短條列式重點，避免過多行銷語氣，也不要加入影片沒有提到的內容。"
-    )
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=types.Content(
-            parts=[
-                types.Part(file_data=types.FileData(file_uri=video_url)),
-                types.Part(text=prompt),
-            ]
-        ),
-    )
-    return response.text
-
-
 def main():
     tw_time = datetime.now(TW_TZ)
-    print(f"🚀 [video] 啟動影片摘要工作流 - {tw_time.strftime('%Y-%m-%d %H:%M')} (台灣時間)")
+    print(f"🚀 [video] 啟動摘要發送工作流 - {tw_time.strftime('%Y-%m-%d %H:%M')} (台灣時間)")
+    print(f"--- [video] 讀取摘要檔案: {SUMMARY_FILE} ---")
 
-    if not VIDEO_URL:
-        print("❌ [video] 未提供 VIDEO_URL")
+    if not os.path.exists(SUMMARY_FILE):
+        print(f"❌ [video] 找不到摘要檔案: {SUMMARY_FILE}")
         sys.exit(1)
 
-    if not GEMINI_API_KEY:
-        print("❌ [video] 找不到 GEMINI_API_KEY")
-        send_tg_text("❌ 影片摘要失敗：找不到 GEMINI_API_KEY，請確認 GitHub Secrets 設定。")
-        sys.exit(1)
-
-    print(f"--- [video] 步驟 1: 使用 Gemini 分析影片 {VIDEO_URL} ---")
-    try:
-        summary = summarize_video(VIDEO_URL)
-    except Exception as e:
-        print(f"❌ [video] Gemini 分析失敗: {e}")
-        send_tg_text(f"❌ 影片摘要失敗（Gemini 分析錯誤）：{e}")
-        sys.exit(1)
+    with open(SUMMARY_FILE, "r", encoding="utf-8") as f:
+        summary = f.read().strip()
 
     if not summary:
-        print("❌ [video] Gemini 沒有回傳內容")
-        send_tg_text("❌ 影片摘要失敗：Gemini 沒有回傳內容。")
+        print(f"❌ [video] 摘要檔案是空的: {SUMMARY_FILE}")
         sys.exit(1)
 
-    print("--- [video] 步驟 2: 發送摘要到 Telegram ---")
-    header = f"🎬 影片重點筆記\n{VIDEO_URL}\n\n"
-    chunks = split_message(header + summary)
+    print("--- [video] 發送摘要到 Telegram ---")
+    chunks = split_message(summary)
 
     ok = True
     for i, chunk in enumerate(chunks, 1):
