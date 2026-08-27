@@ -1,4 +1,4 @@
-name: Separate Stock Monitors
+name: Highway Traffic Monitor
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
     - cron: '*/5 23 * * 0-4'
     # 早上 08:00 ~ 08:55 (台灣時間 一到五) -> UTC 00:00~00:55 (一到五)
     - cron: '*/5 0 * * 1-5'
-    
+
     # 下午 16:00 ~ 18:55 (台灣時間 一到五) -> UTC 08:00~10:55 (一到五)
     - cron: '*/5 8-10 * * 1-5'
   workflow_dispatch:
 
 jobs:
-  run-all-monitors:
+  run-traffic-monitor:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,14 +24,17 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
           python -m pip install --upgrade pip
-          pip install requests yfinance
+          pip install requests
 
-      - name: Run All Scripts
+      - name: Run highway monitor
         env:
           TDX_ID: ${{ secrets.TDX_CLIENT_ID }}
           TDX_SECRET: ${{ secrets.TDX_CLIENT_SECRET }}
