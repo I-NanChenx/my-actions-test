@@ -29,6 +29,6 @@ jobs:
       - name: Send summary to Telegram
         env:
           SUMMARY_FILE: ${{ github.event.inputs.summary_file }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.IXYOUTUBE_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python video_summary.py
