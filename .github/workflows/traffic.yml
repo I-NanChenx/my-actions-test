@@ -2,6 +2,9 @@ name: Highway Traffic Monitor
 
 on:
   push:
+    paths:
+      - 'highway.py'
+      - '.github/workflows/traffic.yml'
   schedule:
     # 早上 07:00 ~ 07:55 (台灣時間 一到五) -> UTC 23:00~23:55 (日到四)
     - cron: '*/5 23 * * 0-4'

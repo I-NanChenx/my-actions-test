@@ -2,10 +2,28 @@ name: Separate Stock Monitors
 
 on:
   push:
+    paths:
+      - 'esmt.py'
+      - 'etf878.py'
+      - 'tsmc.py'
+      - 'etf56.py'
+      - '.github/workflows/taiwan_stock_steategy.yml'
   schedule:
     - cron: '5 1 * * 1-5'  # 台灣 09:05
     - cron: '35 5 * * 1-5' # 台灣 13:35
   workflow_dispatch:
+    inputs:
+      target:
+        description: '要執行的腳本（all = 全部四支）'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - esmt.py
+          - etf878.py
+          - tsmc.py
+          - etf56.py
 
 jobs:
   run-all-monitors:
@@ -24,17 +42,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests yfinance twstock
 
-      - name: Run All Scripts
+      - name: Run Scripts
         env:
           # 這裡必須對應你截圖中的 Secret 名稱
+          TARGET: ${{ github.event.inputs.target || 'all' }}
           TSMC_TOKEN: ${{ secrets.TSMC_BOT_TOKEN }}
           ETF878_TOKEN: ${{ secrets.I00878_BOT_TOKEN }}
           ETF56_TOKEN: ${{ secrets.I0056_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          # 每支獨立執行：任一支失敗不會中斷後面的腳本
+          # 手動觸發可指定單一腳本；push／排程觸發時 TARGET 預設為 all，行為與原本相同
+          if [ "$TARGET" = "all" ]; then
+            SCRIPTS="esmt.py etf878.py tsmc.py etf56.py"
+          else
+            SCRIPTS="$TARGET"
+          fi
           status=0
-          for s in esmt.py etf878.py tsmc.py etf56.py; do
+          for s in $SCRIPTS; do
             echo "::group::$s"
             python "$s" || { echo "::warning::$s 執行失敗 (exit $?)"; status=1; }
             echo "::endgroup::"
