@@ -1,28 +1,32 @@
-🎬 影片重點筆記（6/10）
-THIS TINY COMPUTER IS UNREAL?? dream computer upgrade: Mac Studio (128gb ram)（Maisy Leigh）
-https://www.youtube.com/watch?v=FVJHWtyJhCA
+🎬 影片重點筆記（7/10）
+跑分灌水？M5 Max 跑大模型，34 vs 70 tok/s 的真相（龍蝦農場）
+https://www.youtube.com/watch?v=GVKEA6B8Hlg
 
 📌 影片主旨
-這是一部總長僅 19 秒的 YouTube Shorts，內容為創作者 Maisy Leigh 簡單開箱並佈置一台配備 128GB 記憶體的 Mac Studio。全片僅配輕鬆背景音樂與畫面，沒有口白、技術解說或效能測試。
+本影片探討在 Apple M5 Max 晶片上執行大型語言模型時，為何實測生成速度（55～70 tok/s）能超越記憶體頻寬的物理理論極限（34 tok/s），揭密這並非造假，而是受快取效應與「投機解碼（Speculative Decoding）」技術影響。
 
-📊 關鍵重點與數據（聚焦與 M5 Pro/Max/Ultra Mac Studio 128GB 記憶體適合執行哪些蒸餾/量化 AI 模型相關的內容）
+📊 關鍵重點與數據
 
-⚠️ 內容說明：本片並未包含任何晶片架構、AI 蒸餾或量化模型的討論與數據，市場上蘋果目前也尚未發布 M5 Pro/Max/Ultra 晶片的 Mac Studio。以下為技術延伸解析：
+1. 物理鐵律（理論極限速度）
+- 純自迴歸解碼下，速度完全受限於記憶體頻寬
+- M5 Max 頻寬 614 GB/s，執行 18GB 大模型（4-bit 量化），理論極限速度為 614÷18 = 34.1 tok/s
 
-1. 大型 GGUF 量化模型部署
-- 128GB RAM 足以輕鬆載入並流暢執行 70B～100B 參數等級的大型語言模型
-- 採用 4-bit 或 8-bit 量化的 GGUF 格式（如 Llama 3 70B、高階 DeepSeek 系列），通常佔用 40GB～80GB 記憶體；128GB 能確保保留足夠系統空間，避免頻繁 SSD Swap 導致降速
+2. 50+ tok/s 的測速虛高（快取效應）
+- Ollama 開關 MTP 速度幾乎無異（48.5 vs 48.6），並非 MTP 造成
+- 真正原因是快取命中加上短文本暖機造成測速虛高
 
-2. 多模型協同運作
-- 128GB 允許同時常駐多個專用模型，例如透過 Ollama 或 LM Studio 同時載入 Qwen2.5-Coder 負責程式碼生成與除錯，搭配另一個 Gemma 模型處理對話或檢索邏輯，不會遭遇 OOM 瓶頸
-- 適合需要頻繁測試 RAG、部署本地 WebUI 或整合 MCP 的開發環境
+3. 70+ tok/s 的關鍵（投機解碼）
+- 讓小模型先「猜」3 個字，大模型再讀取一次權重進行「一次驗收」
+- 透過打包驗證方式繞過記憶體頻寬物理極限，讓速度衝上 70 tok/s 以上
 
-3. 突破 VRAM 限制
-- 傳統高階獨顯（如 RTX 4090）最高僅 24GB VRAM，通常需多卡伺服器才能跑 70B 以上模型
-- Mac Studio 128GB 統一記憶體直接化解此痛點，是目前單機執行超大量化開源模型最具成本效益的硬體方案
+4. （聚焦）M5 Pro/Max/Ultra Mac Studio 128GB 適合執行的量化/蒸餾模型策略
+- 核心公式：晶片頻寬 ÷ 模型權重 GB 數 = 物理極限 tok/s
+- M5 Max（614 GB/s）+ 128GB RAM：扣除系統保留約可載入 80～100GB 模型（如 Llama-3 70B 或 Qwen 72B 的 4-bit/8-bit 量化版）；載入 80GB 模型基礎極限降至約 7.6 tok/s，必須搭配蒸餾小模型作 Draft Model 啟用投機解碼才能流暢
+- M5 Ultra（假設頻寬翻倍達 1200+ GB/s）+ 128GB RAM：極度適合執行 30B～70B 級距的 4-bit 量化模型，即便不開投機解碼，載入 40GB 權重也能維持約 30 tok/s
+- 建議選擇支援投機解碼生態的模型組合：主模型用高參數量蒸餾/量化版本，搭配同系列極小參數模型（如 0.5B 或 1.5B）做預測，榨出統一記憶體最大效能
 
 💡 結論與建議
-- 本片僅為純視覺開箱紀錄，無法提供 AI 效能實測參考
-- 若目標是建立強大本地 LLM 開發環境，128GB 記憶體的 Mac Studio（現有 M2 系列或未來 M4/M5 系列）都是非常強悍的選擇；建議搜尋「Apple Silicon 128GB LLM Benchmark」相關實測文章，對未來擴充自動化開發工具鏈與本地 RAG 系統執行效率會有實質幫助
+- 「三秒評估法」：≦34 tok/s 為正常解碼物理極限；50+ tok/s 是快取效應虛高數據；70+ tok/s 代表成功啟用投機解碼（真正的硬體/軟體最佳化）
+- 在 128GB Mac 上部署超大參數模型，單純依賴量化壓縮仍會撞到記憶體頻寬牆；務必在 Ollama 或 MLX 等後端框架中正確配置並啟用投機解碼，用小模型輔助大模型，才是提升生成速度最有效率的方法
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「M5 Pro/Max/Ultra Mac Studio 128GB 適合跑哪些蒸餾/量化模型」主題批次之 6/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「M5 Pro/Max/Ultra Mac Studio 128GB 適合跑哪些蒸餾/量化模型」主題批次之 7/10）
