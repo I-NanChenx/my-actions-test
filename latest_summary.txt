@@ -1,35 +1,33 @@
-🎬 影片重點筆記（1/10）
-Mac Studio M5 vs M6 Mac Mini: The Ultimate Local LLM Vibe Coding Guide（DeepCombinator）
-https://www.youtube.com/watch?v=vznZhROf89Y
+🎬 影片重點筆記（2/10）
+Apple's New M5 Max Changes the Local AI Story（Alex Ziskind）
+https://www.youtube.com/watch?v=XGe7ldwFLSE
 
 📌 影片主旨
-這部影片深入探討蘋果最新的 M5 系列 Mac（特別是 Mac Studio）是否真正稱得上「終極的本地端 LLM 程式開發神機」。內容解析 Apple Silicon 全新的 GPU 神經加速器如何解決以往運行 AI 時「提示詞預填充（Prefill）」極度緩慢的問題，以及「統一記憶體架構」搭配 4-bit 量化技術，如何讓開發者在桌上型電腦流暢執行高達千億甚至數千億參數的 MoE（混合專家）模型。
+本影片全面實測蘋果全新 M5 Max MacBook Pro（配備 40 核心 GPU 與 128GB 記憶體），並與前代 M4 Max 及頂規桌上型工作站 M3 Ultra Mac Studio 對比。核心聚焦於軟體開發效能與本地端 AI 模型的推理表現，包含記憶體頻寬、SSD 讀寫速度、提示詞處理（Prompt Processing）與詞元生成（Token Generation）速度。
 
-📊 關鍵重點與數據（聚焦 M5 Mac Studio 128GB 與量化 AI 執行表現）
+📊 關鍵重點與數據（聚焦 M5 128GB 記憶體執行量化/蒸餾 AI 模型）
 
-1. 專屬硬體打破 Prefill 瓶頸
-- M5 晶片首度在每個 GPU 核心內建支援 FP8（8-bit 浮點數）的硬體級神經加速器與專屬 MatMul（矩陣乘法）單元，大幅加速神經網路基礎運算
+1. GPU 內建神經加速器（架構大躍進）
+- M5 Max 的 40 核 GPU「每一個核心」皆內建神經加速器，最高記憶體頻寬達 614 GB/s，記憶體容量上限 128GB（M3 Ultra 可達 512GB）
 
-2. 驚人的生成速度躍升
-- 以 Qwen 38B 模型為例，舊硬體 Prefill 速度約 158 tokens/s，M5 直接飆升至 578 tokens/s 以上；處理 16,000 token 提示詞的時間從近 2 分鐘壓縮到 38 秒
+2. 超高速 Gen 5 SSD 加速模型載入
+- 讀取速度達 13,647 MB/s、寫入 16,302 MB/s，幾乎是 M4 Max 與 M3 Ultra 的兩倍，大幅加快大型模型從硬碟載入的速度
 
-3. 最完美開發配置：M5 Max Mac Studio 128GB
-- 規格：40 核心 GPU、128GB 統一記憶體，售價約 $3,000–$3,500 美元
-- 效能：Decode（生成）55–88 tokens/s；Prefill（預填充）1,000–2,700 tokens/s
-- 終端機解鎖記憶體：預設 GPU 可用記憶體上限 75%，可透過指令（sudo sysctl iogpu.wired_limit_mb=120000）拉高至約 120GB
+3. 提示詞處理（PP）效能輾壓
+- 執行 Gemma 34B（Q4_K_M 4-bit 量化）時，PP 速度達 4,468 tokens/s，是 M4 Max（1,855 tokens/s）的 2.4 倍，甚至擊敗 32 核 CPU 的 M3 Ultra Mac Studio（2,959 tokens/s）
 
-4. 4-bit 量化與 MoE 模型的化學反應
-- 主流強大程式碼模型多為 MoE 架構（如千億參數的 Qwen 3.5 122B），極度考驗記憶體容量而非頻寬；4-bit 量化可大幅縮減模型體積，128GB 統一記憶體恰能完整容納量化後的 120B 模型
+4. 執行超大型量化模型
+- GPT-OSS 120B（1200 億參數，磁碟佔用約 60GB）在 128GB 記憶體的 M5 Max 上可順暢執行；詞元生成達 65 tokens/s（M4 Max 61 tokens/s、M3 Ultra 82 tokens/s）
 
-5. 本地模型實力超越雲端標準
-- JetBrains 實測 4-bit 量化的 Qwen 3.6（27B）本地模型，日常寫程式跑分 29.5 分，微幅超越雲端標準 Claude Sonnet 3.5（29 分）
+5. 混合專家模型（MoE）表現
+- Qwen 3.5 35B（活躍參數 3B）生成速度 88.49 tokens/s，優於 M4 Max（79.1）與 M3 Ultra（69）
 
-6. 無妥協頂配：M5 Ultra 256GB
-- 預算 $10,800 美元以上，可在完全離線狀態下穩定執行如 DeepSeek V3.1 這類 4,000 億參數的開放模型
+6. 128GB 記憶體的極限與適合度
+- 非常適合執行 4-bit 到 8-bit 量化的中大型模型（如 Gemma 34B、Qwen 35B，最高可推動 120B 等級量化模型），只要模型容量在 100GB 左右以內都能發揮神經加速器的預填充優勢
 
 💡 結論與建議
-- 現在就是購買時機：全球 DRAM 短缺、記憶體價格 2026 Q1 已飆漲 100%，且短期內（2028 年 M7 前）不會有 M6 Ultra 或更高階桌機晶片，建議直接入手 128GB 的 M5 Max Mac Studio
-- PC 陣營替代方案有致命缺陷：消費級顯卡記憶體受限（RTX 5090 僅 32GB VRAM），專業卡昂貴且高耗電；AMD 大記憶體平台的 ROCm 生態系不如蘋果 MLX 穩定好用
-- 企業資安思維需重新評估：頂尖 AI 與程式碼可完全離線運行在一台不到 8 磅的 Mac Studio 內，實體防護將與網路安全同等重要
+- M5 Max 是筆電領域的本地 AI 神機：GPU 內建神經加速器讓長文本/大型 Prompt 處理效能倍數增長，甚至超越 M3 Ultra，對常需大量 Context 分析或寫程式的開發者是革命性升級
+- 記憶體容量決定模型天花板：128GB 能勝任市面上絕大多數量化與蒸餾模型（7B 到 120B），但若需執行超過 120B 且未深度量化的巨無霸模型，仍需最高 512GB 的 M3 Ultra
+- 對未來 Mac Studio 的期待：若推出結合大容量記憶體（192GB–512GB 以上）的 M5 Ultra Mac Studio，將是本地執行未量化超大型模型的終極設備
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「M5 Pro/Max/Ultra Mac Studio 128GB 適合跑哪些蒸餾/量化模型」主題批次之 1/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「M5 Pro/Max/Ultra Mac Studio 128GB 適合跑哪些蒸餾/量化模型」主題批次之 2/10）
