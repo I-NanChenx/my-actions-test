@@ -1,29 +1,21 @@
-🎬 影片重點筆記（10/10，完結篇）
-新舊MBP 本地LLM對決〡M2 Max vs M5 Max〡極限測試大型LLM（UNWIRE.HK）
-https://www.youtube.com/watch?v=-q5boUjx8l4
+🎬 影片重點筆記（1/10）
+Wavlink 12-in-1 Review: The Best Thunderbolt 5 Docking Station（Tech It Easy）
+https://www.youtube.com/watch?v=SrF-SSokgyU
 
 📌 影片主旨
-本影片實際測試設備為 M5 Max MacBook Pro（128GB 統一記憶體）與前代 M2 Max MacBook Pro（64GB 統一記憶體），透過不同參數規模的量化（Quantized）模型進行本地端 LLM 極限測試，驗證 128GB 大容量記憶體在生成速度與應付超大型模型時的硬體優勢。雖然測試機型為 MacBook Pro，但基於 Apple Silicon 相同的統一記憶體架構，數據對 128GB 規格的 Mac Studio 同樣具有高度參考價值。
+本影片透過回答挑選擴充基座時最常遇到的 10 個核心問題（頻寬差異、線材重要性、DisplayLink 軟體驅動與原生訊號差異、跨平台相容性、發熱與供電保護等），開箱與評測 Wavlink 12 合 1 Thunderbolt 5 旗艦擴充基座（Thunderlight Dock），全面探討 Thunderbolt 5 對高階多螢幕、高更新率輸出與外接 SSD 高速傳輸的實質優勢。
 
 📊 關鍵重點與數據
-
-1. 中型量化模型對決：Qwen3.5-27B-8bit
-- 測試A（邏輯推理解題／誠實者）：M5 Max（128GB）生成速度 17.53 token/秒，耗時9分51秒；M2 Max（64GB）生成速度 11.79 token/秒，耗時16分45秒。M5 Max 速度快了 69.7%
-- 測試B（邏輯推理解題／三神）：M5 Max（128GB）生成速度 17.68 token/秒，耗時6分17秒；M2 Max（64GB）生成速度 11.90 token/秒，耗時11分41秒。M5 Max 速度快了 85.9%
-
-2. 128GB 記憶體極限挑戰：Qwen3.5-122B-A10B-4bit
-- 此階段為 M5 Max（128GB）獨角戲，因122B參數模型過大，64GB記憶體機型直接無法負載
-- 測試C（數學題解題）：生成速度高達 47.57 token/秒，耗時13分34秒
-- 測試D（生成影片稿）：生成速度高達 53.10 token/秒，耗時2分07秒
-
-3. 128GB 記憶體適合執行哪些模型
-- 可輕鬆流暢運行 30B 級別的 8-bit 量化模型（如 Qwen3.5-27B-8bit）
-- 更具備挑戰 100B 以上等級 4-bit 量化模型（如 Qwen3.5-122B-A10B-4bit）的實力，且在122B模型下仍能維持約50 token/秒的高生成速度，實用性極高
-- 128GB 統一記憶體能完整承載千億參數的4-bit量化模型而不會發生 OOM（記憶體不足），這是64GB設備無法跨越的物理限制
+1. 傳輸頻寬：單向最高達 120 Gbps（Bandwidth Boost 模式），雙向頻寬達 80 Gbps，約為 Thunderbolt 4（40 Gbps）的兩倍；僅需單條 TB5 線即可承載供電、資料與多螢幕視訊
+2. 供電：主機供電最高支援 140W PD 快充（可跑滿 MacBook Pro M4 Pro）；正面另有 30W PD Type-C 供手機/平板快充
+3. 連接埠（共 12-in-1）：1 個 TB5 上行埠（140W）＋ 2 個 TB5 下行埠（80 Gbps，可外接顯示器）、多組 10 Gbps USB-A、2.5G RJ-45 網路埠、SD 4.0／MicroSD 4.0 雙讀卡槽、3.5mm 音訊孔
+4. 顯示輸出：原生硬體直通（無 DisplayLink 壓縮延遲問題），三螢幕最高 4K@144Hz，雙螢幕最高 8K@60Hz，最高支援 540Hz 更新率；Mac 建議 M4 以上晶片，Windows 只要有 TB5 埠即可點亮三台 4K@144Hz
+5. 實測：外接 SSD 進行 4K/8K 剪輯與多軌傳輸皆順暢；金屬散熱外殼長時間高負載不過熱降頻，優於百元美金塑膠機型常見的過熱死機問題
+6. 售價：約 $300～400 美元（特價偶低於 $300），內附原廠 TB5 線材與大功率變壓器
 
 💡 結論與建議
-- 記憶體容量決定了本地端能運行「多大」的模型：128GB 規格是運行30B～120B級別量化/蒸餾模型的關鍵門檻
-- 影片使用的是筆電（MacBook Pro），Mac Studio 作為桌上型主機具備更優秀的散熱模組與無電池功耗限制優勢，若使用128GB的M5系列 Mac Studio 進行長時間AI推論、蒸餾或微調，效能穩定性預期會比影片中的筆電數據更加優異
-- 對於考慮購入 M5 Pro/Max/Ultra Mac Studio 128GB 的使用者，此機型足以應付從30B 8-bit到120B 4-bit範圍的主流開源量化模型，是本地端跑大型LLM的甜點規格
+- 適合族群：需外接高速 SSD 剪輯 4K/8K 的專業創作者、追求雙/三螢幕 4K@144Hz 或高刷新率且不想用 DisplayLink 驅動的多螢幕/電競用戶、擁有 M4 Pro/Max 或旗艦 TB5 筆電需單線 140W 快充者、重視未來擴充性的高預算用戶
+- 缺點：無內建 HDMI/DisplayPort 原生介面（需另購轉接線）、網路埠為 2.5G 而非 10G、不具 KVM 雙主機切換功能
+- 整體評價：價格偏高且對僅接單一 1080P 螢幕的一般文書用戶效能過剩（TB4 已足夠），但高頻寬、140W 供電、優良散熱與完整配線讓它成為兼顧效能與穩定性的長期投資
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「M5 Pro/Max/Ultra Mac Studio 128GB 適合跑哪些蒸餾/量化模型」主題批次之 10/10，全系列完結）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 1/10）
