@@ -1,21 +1,21 @@
-🎬 影片重點筆記（2/10）
-IVANKY FusionDock Max 2 Review — The Best Thunderbolt 5 Dock for Macbook in 2026?（K24 Tech）
-https://www.youtube.com/watch?v=_kLIYb0rXc0
+🎬 影片重點筆記（3/10）
+[Top 5] Best Thunderbolt 5 Docking Stations 2026 - Best for Work, Gaming & Content Creation（Gadget Ten）
+https://www.youtube.com/watch?v=2AxYybpsIDU
 
 📌 影片主旨
-本影片評測專為 Mac 生態系設計的旗艦級 Thunderbolt 5 擴充基座 iVANKY FusionDock Max 2，涵蓋開箱、盒裝線材檢視、連接埠配置解析，並實際部署於搭配 MacBook Pro M4 Max 的多螢幕桌面工作站，分享三螢幕輸出體驗、散熱噪音表現，以及在 Windows 筆電上的相容性測試。
+本影片盤點並評測 5 款頂級 Thunderbolt 5 擴充基座，針對專業創作者、剪輯師、工程師與硬體玩家，比較各款連接埠配置、控制器設計、供電瓦數、外接螢幕支援、SSD 擴充性與實測讀寫數據。
 
 📊 關鍵重點與數據
-1. 核心規格：Thunderbolt 5 技術，傳輸頻寬最高達 120 Gbps；連接埠總數多達 23 個
-2. 供電：隨附獨立變壓器提供高達 240W 總供電；主機端用特製雙頭 USB-C 線纜連接 MacBook（佔用側邊兩個孔位），為 M4 Max 等高功耗機型提供穩定電力與頻寬；前面板另有約 30W PD 快充輸出
-3. 連接埠配置：前面板含 SD/microSD 卡槽、3.5mm 音訊孔、30W PD 埠、多組 10Gbps/5Gbps/USB 2.0 USB-C 與 USB-A；後面板含雙 USB-C 主機輸入、3 組視訊埠（HDMI＋支援 80/120Gbps 的 Type-C）、2.5G RJ45 網路埠、S/PDIF 光纖音訊輸出
-4. 實測：成功同時驅動 3 台外接螢幕（HDMI＋Type-C＋TB5 各一），並同時掛載 16TB 硬碟、多組 10Gbps SSD、鍵鼠與 Stream Deck 仍運作順暢；重載時偶有輕微風扇嗡嗡聲但多數時間安靜，未曾過熱當機
-5. 跨平台：官方雖標榜 macOS 專屬設計，但實測 Windows 筆電（Dell Latitude）仍可點亮螢幕與基本周邊，惟部分功能與頻寬受限
-6. 價格：影片未口播具體定價（送測樣機），說明欄提供折扣碼
+1. Anker Prime TB5（約$399.99）：14合1，HDMI 2.1與DP 2.1共用晶片無法同時輸出；內建GaN電源模組，總輸出232W，主機供電140W PD；缺點是SD讀卡機仍為UHS-I
+2. Kensington SD7100T5 EQ Pro（約$449.99）：19合1，含3個TB5下游埠、專業SD/microSD/CF讀卡槽；內建M.2 NVMe插槽，實測讀取5,800MB/s、寫入5,400MB/s；支援120Gbps頻寬加速，140W PD供電
+3. iVANKY FusionDock Max 2（約$499.99）：23個連接埠，專為Apple Silicon雙上行線設計；M Max可驅動雙6K@60Hz+1台4K@60Hz（共三螢幕）；240W變壓器/140W PD；缺點是風扇常時運轉、HDMI僅2.0、網路僅2.5GbE
+4. UGREEN Revodok Max（約$499.99）：17合1全鋁合金機身，內建隱藏式M.2插槽支援最高8TB，實測讀寫約6,200MB/s；支援單螢幕8K@60Hz或雙6K@60Hz；240W變壓器/140W PD；缺點是無實體HDMI、網路僅2.5GbE
+5. CalDigit TS5 Plus（約$500）：獨立雙10Gbps USB控制器架構，實測TB5 SSD讀取速度達6,758MB/s；配備10GbE網路（優於其他款的2.5GbE）；330W電源供應器，140W PD另加3組36W快充；純被動散熱可完全靜音
 
 💡 結論與建議
-- 適合族群：使用 M4 Max 等高功耗 MacBook Pro 從事影音剪輯、3D 渲染或需接續多台高速外接 SSD 的專業創作者；想用一條整合線路搞定「240W 供電＋3 螢幕輸出＋23 孔擴充」極簡桌面的用戶
-- 不建議：純 Windows 使用者（此機專為 macOS 雙 USB-C 架構設計，Windows 上功能與原生 DisplayPort 支援受限，建議另選標準拓撲的 TB 擴充座）
-- 整體評價：預算充足且以 MacBook 為主力機的用戶，此機連接埠數量多、走線配置合理、供電強悍，是 2026 年市場上數一數二頂規的 MacBook 專用 Thunderbolt 5 擴充座
+- 追求極致效能與安靜環境首選：CalDigit TS5 Plus，獨立雙控制晶片、10GbE網路、330W大供電、零噪音被動散熱，整體表現最全面
+- Mac多螢幕重度用戶：iVANKY FusionDock Max 2，23孔位且能原生驅動雙6K甚至三螢幕
+- 需要高速本地儲存擴充：UGREEN Revodok Max 或 Kensington SD7100T5 EQ Pro，皆內建M.2 NVMe插槽，實測讀寫5,400～6,200MB/s，適合常態備份4K/8K素材的創作者
+- 注重桌面整潔與簡約整合、預算有限：Anker Prime TB5，售價最親民且GaN電源內建，免去外接電源磚
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 2/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 3/10）
