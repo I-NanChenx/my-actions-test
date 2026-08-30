@@ -1,20 +1,19 @@
-🎬 影片重點筆記（4/10）
-I Didn't Expect This Dock to Be This Powerful | Thunderbolt 5 Dock Review（Jacob Gago）
-https://www.youtube.com/watch?v=yMCYNTBaHQg
+🎬 影片重點筆記（5/10）
+I Found the Best Docking Station of 2026.（Switch and Click）
+https://www.youtube.com/watch?v=TP8nl2_wBQM
 
 📌 影片主旨
-本影片開箱並實測 WAVLINK Thunderbolt 5 多功能擴充基座（THUNDERLIGHT DOCK），評測外觀散熱做工、前後 I/O 連接埠配置、雙系統（Windows／macOS）多螢幕輸出能力、供電規格，並實測 SD 卡槽與外接 SSD 的讀寫傳輸速率。
+本影片以「Thunderbolt 4 是否已經足夠，還是該升級 Thunderbolt 5 擴充塢」為核心命題，針對日常使用擴充塢的三大需求（螢幕輸出、充電供電、週邊資料傳輸）進行實測與規格對比。
 
 📊 關鍵重點與數據
-1. 品牌型號：WAVLINK Thunderbolt 5 Multifunctional Docking Station（12-in-1 / 80G），銀色鋁合金機身搭配內建主動散熱風扇
-2. 連接埠（共12-in-1）：正面含3.5mm音訊孔、SD/MicroSD UHS-II讀卡槽（理論最高312MB/s）、2組10Gbps USB-A、1個TB5 Host上行埠（140W PD）、1個30W PD USB-C；背面含2個TB5下行埠、2組10Gbps USB-A、2.5G RJ-45網路孔、DC電源輸入孔
-3. 傳輸與顯示：雙向頻寬最高80Gbps，影像頻寬可動態提升至120Gbps，向下相容TB4/USB4/USB3.0；Windows系統最高支援3螢幕4K@144Hz或雙螢幕8K@60Hz；macOS不支援三螢幕，基礎晶片(M1/M2/M3)僅1台外接螢幕，高階晶片(Pro/Max)支援雙6K@60Hz
-4. 實測讀寫：SD讀卡機(UHS-II)寫入約189-190MB/s、讀取約214.6MB/s；外接SSD(TB5連接)寫入約4,300-4,394MB/s、讀取最高達4,606MB/s
-5. 缺點：140W Host埠設計在機身正面，桌面走線較不俐落；網路僅2.5Gbps，對重度依賴10G區網或NAS的專業用戶略顯不足
-6. 價格：影片未口播具體定價，購買連結在說明欄
+1. 核心規格對比：雙向頻寬 TB4 為 40Gbps，TB5 最高 80Gbps（頻寬增強模式可達120Gbps）；最大供電 TB4 為100W，TB5 為240W；螢幕輸出 TB4 支援單螢幕4K@120Hz或雙螢幕4K@60Hz，TB5支援最高3台4K@144Hz或2台8K@60Hz
+2. 顯示器極限測試：同時接4K@240Hz + 1440p@500Hz雙螢幕（合計約38億像素/秒），TB4只要4K螢幕超過60Hz就當機黑屏；TB5即使逼近40億像素/秒的頻寬上限仍順暢運作
+3. 充電供電測試：一般文書筆電兩者皆無問題；但高負載電競筆電（230W原廠變壓器）情境下，TB4（上限100W）供電不足導致電量下滑且遊戲幀率暴跌90%（119FPS→12FPS）；TB5（最高240W）仍可維持滿電
+4. 外接SSD傳輸測試：直插基準16GB耗時30.6秒；TB4接滿2台螢幕時暴增至42.9秒（慢40%，換算每日傳1TB會從31分鐘延長到45分鐘）；TB5接滿2台螢幕僅需31.6秒，幾乎不受影響
+5. 頻寬共享是關鍵瓶頸：TB4的螢幕訊號與USB資料傳輸共享有限頻寬，多螢幕高更新率會嚴重排擠傳輸速度；TB5頻寬充裕，多工不受影響
 
 💡 結論與建議
-- 適合族群：實測SSD讀寫達4,300~4,600MB/s，適合重度影音剪輯與多媒體創作者處理4K/8K素材；140W供電可直接充飽16吋MacBook Pro或高瓦數Windows創作者筆電；Windows用戶可原生拓展3組4K@144Hz或雙8K螢幕；向下相容TB4/USB4，適合未來升級TB5筆電的用戶
-- 考量點：在意桌面正面走線整潔，或需要10GbE級網路的工作站用戶需權衡；追求頂尖TB5頻寬、優良散熱與140W供電者，此機各方面實測表現皆強悍
+- 一般使用者（辦公、遠端工作、家用娛樂，1-2台4K@60Hz螢幕搭配輕薄筆電）：選TB4即足夠，性價比高
+- 重度專業用戶值得投資TB5：追求高更新率電競螢幕（4K 144Hz/240Hz、500Hz）的玩家、每日需傳輸大量超大檔案（數百GB至TB級）的剪輯師/攝影師、使用高瓦數電競筆電想單線同時解決供電、多螢幕與週邊連接的用戶
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 4/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 5/10）
