@@ -1,21 +1,22 @@
-🎬 影片重點筆記（8/10）
-Ultimate Thunderbolt 5 Dock Comparison: Caldigit, Sonnet, Anker, & More（Adam Talks Tech）
-https://www.youtube.com/watch?v=vdJGN-OjXlg
+🎬 影片重點筆記（9/10）
+5 Best Thunderbolt 5 Docks 2026 - Honest Comparison & Buying Guide（SmartHomePicksUSA）
+https://www.youtube.com/watch?v=aNjRbMsghFs
 
 📌 影片主旨
-本影片對市面上多款 Thunderbolt 5 擴充基座進行深入比較，涵蓋CalDigit、Sonnet、iVANKY、Anker等品牌，說明TB5可提供80-120Gbps頻寬，讓使用者僅靠一條線串聯顯示器、網路與周邊並為筆電充電。
+本影片探討現階段購買 Thunderbolt 5 擴充塢的「矛盾與選購指南」：雖然未來筆電(如Intel Panther Lake)可能不直接整合TB5極速傳輸，但購買TB5擴充塢的真正目的是為了更強供電(最高140W)、更多擴充接口、更好多螢幕支援，以及為未來設備升級預作準備。
 
 📊 各產品完整規格與價格
-1. CalDigit Element 5 Hub：正面2個USB-C數據埠，背面2個USB-A、3個TB5埠、1個USB-A，側面1個主機連接埠；供電90W；缺點供電瓦數較低、無內建網路孔/SD讀卡機/專屬視訊輸出；價格約279.99美元；定位輕巧靈活、價格最親民
-2. Sonnet Echo 13 SSD Dock：內建高速SSD(可選1TB/2TB/4TB)；正面主機埠、電源鍵、備用TB埠、快充USB-A、UHS-II讀卡機、耳機孔，背面3個USB-A、2.5GbE網路孔、2個TB埠；塑膠機身但散熱佳；缺點USB-C埠少、無專屬視訊輸出、無10GbE網路；價格約439.99美元(1TB版)
-3. CalDigit TS5 Plus：連接埠數量最多、性能最強，多組USB控制晶片確保滿血頻寬；正面2個USB-C(1個36W)、UHS-II讀卡機、耳機、USB-A，背面3個USB-C、4個USB-A、10GbE網路孔、獨立麥克風/耳機孔、DisplayPort、2個下行+1個上行TB埠；附330W變壓器供電140W；價格約499.99美元；適合大量USB設備、音訊介面或NAS連接的專業創作者/音樂人
-4. CalDigit TS5(標準版)：與Plus類似提供140W供電但USB-C埠較少；具3個TB下行埠(Plus為2個)，適合連接多台TB顯示器；缺點無專屬視訊輸出、網路降級為2.5GbE；價格約399.99美元
-5. iVANKY FusionDock Pro 3(榮譽提名)：規格與Sonnet Echo 13相似，金屬機身但無內建SSD；價格約439.99美元；作者認為缺乏殺手級特色，除非大特價否則較難推薦
-6. Anker Prime Thunderbolt 5 Dock(榮譽提名)：電源變壓器內建機身，免除桌下大發電磚；缺點僅3個TB埠、USB埠總數較少；價格約399.99美元；建議特價300美元左右入手才划算
+1. Plugable TBT-UDT3：適合預算有限、想為未來做準備的消費者；價格299美元；配備4個全速TB5接口、內建UHS-II高速讀卡機、87W供電；缺點USB-A接口都在背面、正面無手機快充接口
+2. Anker Prime TB5：適合注重設計感與極簡桌面配置用戶；價格379美元；最大亮點是內建電源供應器免去桌下電源磚，所有USB-A皆為10Gbps；缺點僅3個TB5接口、SD讀卡機側邊設計可能礙手
+3. Kensington SD7100T5 EQ Pro：適合需要海量擴充的重度創作者(擴充塢界瑞士刀)；價格450美元；高達19個接口含SD/MicroSD/CF讀卡機及TOSLINK光纖音訊、內建M.2 SSD插槽；缺點電源磚極大、USB-C供電上限未標示易混淆
+4. Razer Thunderbolt 5 Dock Chroma：適合電競遊戲玩家；價格400美元；具可自訂RGB燈效(可關)、免工具安裝M.2 NVMe SSD插槽支援PCIe4.0速度可直接跑遊戲；缺點外觀風格強烈不適合一般辦公桌面，且Apple M4基礎晶片用戶仍受限僅能外接兩螢幕
+5. CalDigit TS5：適合把擴充塢當生財工具、絕不容許出錯的專業人士；價格449美元；業界標準，無RGB花俏功能主打純粹可靠性，保證140W供電絕不掉壓，同級最佳Mac/Windows多螢幕支援；缺點無內建M.2 SSD插槽
 
 💡 結論與建議
-- 預算有限/入門首選：CalDigit Element 5 Hub——彈性高、價格最便宜，適合Mac Mini/Mac Studio用戶做少量擴充或Daisy-chain串接
-- 需要擴充筆電儲存空間：Sonnet Echo 13——兼顧連接埠與極速SSD儲存，適合不想外接硬碟的用戶
-- 重度專業玩家/終極推薦：CalDigit TS5 Plus——大量USB設備、需10GbE連接NAS的用戶應直接選擇，擴充火力與穩定度最強
+- 影片強調沒有一款擴充塢適合所有人，選擇取決於個人需求與桌面配置
+- 追求極致穩定性與專業工作(最推薦盲選安全牌)：CalDigit TS5，業界標準保證不斷線不掉電
+- 討厭理線、追求極簡桌面：Anker Prime TB5，唯一內建電源供應器的款式
+- 需要擴充硬碟空間：電競玩家推薦Razer；需要各種讀卡機的創作者推薦Kensington
+- 購買前提醒：TB5擴充塢平均價格高達400美元(約TB4的兩倍)，務必確認筆電本身支援的外接螢幕數量(擴充塢無法突破電腦硬體限制)，使用原廠認證線材，並在購買後立即更新韌體以解決大部分潛在問題
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 8/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 9/10）
