@@ -1,19 +1,20 @@
-🎬 影片重點筆記（5/10）
-I Found the Best Docking Station of 2026.（Switch and Click）
-https://www.youtube.com/watch?v=TP8nl2_wBQM
+🎬 影片重點筆記（6/10）
+Top 5 Best Docking Stations 2026 | USB-C & Thunderbolt 5（Besto）
+https://www.youtube.com/watch?v=C0wpkwZ1W_0
 
 📌 影片主旨
-本影片以「Thunderbolt 4 是否已經足夠，還是該升級 Thunderbolt 5 擴充塢」為核心命題，針對日常使用擴充塢的三大需求（螢幕輸出、充電供電、週邊資料傳輸）進行實測與規格對比。
+本影片精選 2026 年市面上排名前五的最佳擴充基座，解決筆電連接埠不足問題，讓筆電化身多螢幕、高速儲存、桌面整潔的全能工作站，並針對不同使用族群逐一比較。
 
-📊 關鍵重點與數據
-1. 核心規格對比：雙向頻寬 TB4 為 40Gbps，TB5 最高 80Gbps（頻寬增強模式可達120Gbps）；最大供電 TB4 為100W，TB5 為240W；螢幕輸出 TB4 支援單螢幕4K@120Hz或雙螢幕4K@60Hz，TB5支援最高3台4K@144Hz或2台8K@60Hz
-2. 顯示器極限測試：同時接4K@240Hz + 1440p@500Hz雙螢幕（合計約38億像素/秒），TB4只要4K螢幕超過60Hz就當機黑屏；TB5即使逼近40億像素/秒的頻寬上限仍順暢運作
-3. 充電供電測試：一般文書筆電兩者皆無問題；但高負載電競筆電（230W原廠變壓器）情境下，TB4（上限100W）供電不足導致電量下滑且遊戲幀率暴跌90%（119FPS→12FPS）；TB5（最高240W）仍可維持滿電
-4. 外接SSD傳輸測試：直插基準16GB耗時30.6秒；TB4接滿2台螢幕時暴增至42.9秒（慢40%，換算每日傳1TB會從31分鐘延長到45分鐘）；TB5接滿2台螢幕僅需31.6秒，幾乎不受影響
-5. 頻寬共享是關鍵瓶頸：TB4的螢幕訊號與USB資料傳輸共享有限頻寬，多螢幕高更新率會嚴重排擠傳輸速度；TB5頻寬充裕，多工不受影響
+📊 各產品完整規格與排名
+第5名 - iVANKY FusionDock Max 1：目標高階MacBook Pro用戶/影像創作者；內建雙TB4晶片，4個TB4接口(40Gbps)、5個USB-A、6個USB-C；最高支援四台6K顯示器；缺點是主要為Mac設計，Windows相容性有限；影片未提及價格
+第4名 - Satechi Triple 4K Display Dock：適合多螢幕工作流程使用者(交易員、工程師)；支援三台4K@60Hz外接顯示器；1個HDMI+2個彈性HDMI/DP接口；前置USB-C/USB-A支援10Gbps；缺點充電功率低(僅約7.5W)，不適合為筆電高瓦數充電
+第3名 - Satechi Dual Dock Stand：適合追求桌面美觀與人體工學者；雙USB-C接頭，支援雙4K螢幕、最高75W供電(需自備變壓器)；設計為筆電支架並內建SSD插槽可直接擴充儲存空間
+第2名 - Anker 568 USB-C Docking Station：適合追求品牌可靠性與性價比平衡者；支援最多三台4K@60Hz顯示器(HDMI+DP組合)；提供最高100W USB-C PD供電；設計緊湊簡約
+第1名 - Kensington Thunderbolt 5 Docking Station：適合追求極致效能、面向未來的高階工作站用戶；採用最新TB5標準，3個下行TB5接口，鋁合金機身含獨立電源開關；移除傳統HDMI以保留高速TB通道；折扣時價格有時低於300美元，性價比極高
 
 💡 結論與建議
-- 一般使用者（辦公、遠端工作、家用娛樂，1-2台4K@60Hz螢幕搭配輕薄筆電）：選TB4即足夠，性價比高
-- 重度專業用戶值得投資TB5：追求高更新率電競螢幕（4K 144Hz/240Hz、500Hz）的玩家、每日需傳輸大量超大檔案（數百GB至TB級）的剪輯師/攝影師、使用高瓦數電競筆電想單線同時解決供電、多螢幕與週邊連接的用戶
+- 總體最值得購買：Kensington Thunderbolt 5 Docking Station（第一名）——採用最新最快的TB5規格，可應對未來數年設備升級需求，折扣時不到300美元即可入手，性價比與效能兼具
+- MacBook Pro專業用戶、需要極致多螢幕輸出：首選iVANKY FusionDock Max 1
+- 重視桌面美學與一體性、想同時獲得支架+擴充埠+額外SSD儲存：首選Satechi Dual Dock Stand
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 5/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 6/10）
