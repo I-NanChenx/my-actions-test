@@ -1,21 +1,21 @@
-🎬 影片重點筆記（1/10）
-Wavlink 12-in-1 Review: The Best Thunderbolt 5 Docking Station（Tech It Easy）
-https://www.youtube.com/watch?v=SrF-SSokgyU
+🎬 影片重點筆記（2/10）
+IVANKY FusionDock Max 2 Review — The Best Thunderbolt 5 Dock for Macbook in 2026?（K24 Tech）
+https://www.youtube.com/watch?v=_kLIYb0rXc0
 
 📌 影片主旨
-本影片透過回答挑選擴充基座時最常遇到的 10 個核心問題（頻寬差異、線材重要性、DisplayLink 軟體驅動與原生訊號差異、跨平台相容性、發熱與供電保護等），開箱與評測 Wavlink 12 合 1 Thunderbolt 5 旗艦擴充基座（Thunderlight Dock），全面探討 Thunderbolt 5 對高階多螢幕、高更新率輸出與外接 SSD 高速傳輸的實質優勢。
+本影片評測專為 Mac 生態系設計的旗艦級 Thunderbolt 5 擴充基座 iVANKY FusionDock Max 2，涵蓋開箱、盒裝線材檢視、連接埠配置解析，並實際部署於搭配 MacBook Pro M4 Max 的多螢幕桌面工作站，分享三螢幕輸出體驗、散熱噪音表現，以及在 Windows 筆電上的相容性測試。
 
 📊 關鍵重點與數據
-1. 傳輸頻寬：單向最高達 120 Gbps（Bandwidth Boost 模式），雙向頻寬達 80 Gbps，約為 Thunderbolt 4（40 Gbps）的兩倍；僅需單條 TB5 線即可承載供電、資料與多螢幕視訊
-2. 供電：主機供電最高支援 140W PD 快充（可跑滿 MacBook Pro M4 Pro）；正面另有 30W PD Type-C 供手機/平板快充
-3. 連接埠（共 12-in-1）：1 個 TB5 上行埠（140W）＋ 2 個 TB5 下行埠（80 Gbps，可外接顯示器）、多組 10 Gbps USB-A、2.5G RJ-45 網路埠、SD 4.0／MicroSD 4.0 雙讀卡槽、3.5mm 音訊孔
-4. 顯示輸出：原生硬體直通（無 DisplayLink 壓縮延遲問題），三螢幕最高 4K@144Hz，雙螢幕最高 8K@60Hz，最高支援 540Hz 更新率；Mac 建議 M4 以上晶片，Windows 只要有 TB5 埠即可點亮三台 4K@144Hz
-5. 實測：外接 SSD 進行 4K/8K 剪輯與多軌傳輸皆順暢；金屬散熱外殼長時間高負載不過熱降頻，優於百元美金塑膠機型常見的過熱死機問題
-6. 售價：約 $300～400 美元（特價偶低於 $300），內附原廠 TB5 線材與大功率變壓器
+1. 核心規格：Thunderbolt 5 技術，傳輸頻寬最高達 120 Gbps；連接埠總數多達 23 個
+2. 供電：隨附獨立變壓器提供高達 240W 總供電；主機端用特製雙頭 USB-C 線纜連接 MacBook（佔用側邊兩個孔位），為 M4 Max 等高功耗機型提供穩定電力與頻寬；前面板另有約 30W PD 快充輸出
+3. 連接埠配置：前面板含 SD/microSD 卡槽、3.5mm 音訊孔、30W PD 埠、多組 10Gbps/5Gbps/USB 2.0 USB-C 與 USB-A；後面板含雙 USB-C 主機輸入、3 組視訊埠（HDMI＋支援 80/120Gbps 的 Type-C）、2.5G RJ45 網路埠、S/PDIF 光纖音訊輸出
+4. 實測：成功同時驅動 3 台外接螢幕（HDMI＋Type-C＋TB5 各一），並同時掛載 16TB 硬碟、多組 10Gbps SSD、鍵鼠與 Stream Deck 仍運作順暢；重載時偶有輕微風扇嗡嗡聲但多數時間安靜，未曾過熱當機
+5. 跨平台：官方雖標榜 macOS 專屬設計，但實測 Windows 筆電（Dell Latitude）仍可點亮螢幕與基本周邊，惟部分功能與頻寬受限
+6. 價格：影片未口播具體定價（送測樣機），說明欄提供折扣碼
 
 💡 結論與建議
-- 適合族群：需外接高速 SSD 剪輯 4K/8K 的專業創作者、追求雙/三螢幕 4K@144Hz 或高刷新率且不想用 DisplayLink 驅動的多螢幕/電競用戶、擁有 M4 Pro/Max 或旗艦 TB5 筆電需單線 140W 快充者、重視未來擴充性的高預算用戶
-- 缺點：無內建 HDMI/DisplayPort 原生介面（需另購轉接線）、網路埠為 2.5G 而非 10G、不具 KVM 雙主機切換功能
-- 整體評價：價格偏高且對僅接單一 1080P 螢幕的一般文書用戶效能過剩（TB4 已足夠），但高頻寬、140W 供電、優良散熱與完整配線讓它成為兼顧效能與穩定性的長期投資
+- 適合族群：使用 M4 Max 等高功耗 MacBook Pro 從事影音剪輯、3D 渲染或需接續多台高速外接 SSD 的專業創作者；想用一條整合線路搞定「240W 供電＋3 螢幕輸出＋23 孔擴充」極簡桌面的用戶
+- 不建議：純 Windows 使用者（此機專為 macOS 雙 USB-C 架構設計，Windows 上功能與原生 DisplayPort 支援受限，建議另選標準拓撲的 TB 擴充座）
+- 整體評價：預算充足且以 MacBook 為主力機的用戶，此機連接埠數量多、走線配置合理、供電強悍，是 2026 年市場上數一數二頂規的 MacBook 專用 Thunderbolt 5 擴充座
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 1/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 2/10）
