@@ -1,21 +1,20 @@
-🎬 影片重點筆記（3/10）
-[Top 5] Best Thunderbolt 5 Docking Stations 2026 - Best for Work, Gaming & Content Creation（Gadget Ten）
-https://www.youtube.com/watch?v=2AxYybpsIDU
+🎬 影片重點筆記（4/10）
+I Didn't Expect This Dock to Be This Powerful | Thunderbolt 5 Dock Review（Jacob Gago）
+https://www.youtube.com/watch?v=yMCYNTBaHQg
 
 📌 影片主旨
-本影片盤點並評測 5 款頂級 Thunderbolt 5 擴充基座，針對專業創作者、剪輯師、工程師與硬體玩家，比較各款連接埠配置、控制器設計、供電瓦數、外接螢幕支援、SSD 擴充性與實測讀寫數據。
+本影片開箱並實測 WAVLINK Thunderbolt 5 多功能擴充基座（THUNDERLIGHT DOCK），評測外觀散熱做工、前後 I/O 連接埠配置、雙系統（Windows／macOS）多螢幕輸出能力、供電規格，並實測 SD 卡槽與外接 SSD 的讀寫傳輸速率。
 
 📊 關鍵重點與數據
-1. Anker Prime TB5（約$399.99）：14合1，HDMI 2.1與DP 2.1共用晶片無法同時輸出；內建GaN電源模組，總輸出232W，主機供電140W PD；缺點是SD讀卡機仍為UHS-I
-2. Kensington SD7100T5 EQ Pro（約$449.99）：19合1，含3個TB5下游埠、專業SD/microSD/CF讀卡槽；內建M.2 NVMe插槽，實測讀取5,800MB/s、寫入5,400MB/s；支援120Gbps頻寬加速，140W PD供電
-3. iVANKY FusionDock Max 2（約$499.99）：23個連接埠，專為Apple Silicon雙上行線設計；M Max可驅動雙6K@60Hz+1台4K@60Hz（共三螢幕）；240W變壓器/140W PD；缺點是風扇常時運轉、HDMI僅2.0、網路僅2.5GbE
-4. UGREEN Revodok Max（約$499.99）：17合1全鋁合金機身，內建隱藏式M.2插槽支援最高8TB，實測讀寫約6,200MB/s；支援單螢幕8K@60Hz或雙6K@60Hz；240W變壓器/140W PD；缺點是無實體HDMI、網路僅2.5GbE
-5. CalDigit TS5 Plus（約$500）：獨立雙10Gbps USB控制器架構，實測TB5 SSD讀取速度達6,758MB/s；配備10GbE網路（優於其他款的2.5GbE）；330W電源供應器，140W PD另加3組36W快充；純被動散熱可完全靜音
+1. 品牌型號：WAVLINK Thunderbolt 5 Multifunctional Docking Station（12-in-1 / 80G），銀色鋁合金機身搭配內建主動散熱風扇
+2. 連接埠（共12-in-1）：正面含3.5mm音訊孔、SD/MicroSD UHS-II讀卡槽（理論最高312MB/s）、2組10Gbps USB-A、1個TB5 Host上行埠（140W PD）、1個30W PD USB-C；背面含2個TB5下行埠、2組10Gbps USB-A、2.5G RJ-45網路孔、DC電源輸入孔
+3. 傳輸與顯示：雙向頻寬最高80Gbps，影像頻寬可動態提升至120Gbps，向下相容TB4/USB4/USB3.0；Windows系統最高支援3螢幕4K@144Hz或雙螢幕8K@60Hz；macOS不支援三螢幕，基礎晶片(M1/M2/M3)僅1台外接螢幕，高階晶片(Pro/Max)支援雙6K@60Hz
+4. 實測讀寫：SD讀卡機(UHS-II)寫入約189-190MB/s、讀取約214.6MB/s；外接SSD(TB5連接)寫入約4,300-4,394MB/s、讀取最高達4,606MB/s
+5. 缺點：140W Host埠設計在機身正面，桌面走線較不俐落；網路僅2.5Gbps，對重度依賴10G區網或NAS的專業用戶略顯不足
+6. 價格：影片未口播具體定價，購買連結在說明欄
 
 💡 結論與建議
-- 追求極致效能與安靜環境首選：CalDigit TS5 Plus，獨立雙控制晶片、10GbE網路、330W大供電、零噪音被動散熱，整體表現最全面
-- Mac多螢幕重度用戶：iVANKY FusionDock Max 2，23孔位且能原生驅動雙6K甚至三螢幕
-- 需要高速本地儲存擴充：UGREEN Revodok Max 或 Kensington SD7100T5 EQ Pro，皆內建M.2 NVMe插槽，實測讀寫5,400～6,200MB/s，適合常態備份4K/8K素材的創作者
-- 注重桌面整潔與簡約整合、預算有限：Anker Prime TB5，售價最親民且GaN電源內建，免去外接電源磚
+- 適合族群：實測SSD讀寫達4,300~4,600MB/s，適合重度影音剪輯與多媒體創作者處理4K/8K素材；140W供電可直接充飽16吋MacBook Pro或高瓦數Windows創作者筆電；Windows用戶可原生拓展3組4K@144Hz或雙8K螢幕；向下相容TB4/USB4，適合未來升級TB5筆電的用戶
+- 考量點：在意桌面正面走線整潔，或需要10GbE級網路的工作站用戶需權衡；追求頂尖TB5頻寬、優良散熱與140W供電者，此機各方面實測表現皆強悍
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 3/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 4/10）
