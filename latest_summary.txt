@@ -1,20 +1,21 @@
-🎬 影片重點筆記（7/10）
-The Endgame Thunderbolt 5 Dock for Mac - iVANKY FusionDock Ultra（Sightseeing Stan）
-https://www.youtube.com/watch?v=Jc-1X9KebaE
+🎬 影片重點筆記（8/10）
+Ultimate Thunderbolt 5 Dock Comparison: Caldigit, Sonnet, Anker, & More（Adam Talks Tech）
+https://www.youtube.com/watch?v=vdJGN-OjXlg
 
 📌 影片主旨
-創作者 Sightseeing Stan 針對 iVANKY FusionDock Ultra（專為 Apple Silicon Mac 設計的頂規 Thunderbolt 5 擴充埠）進行長達5-6個月的深度實測，解決 Mac Studio 連接埠不足且背後孔位盲插不便的痛點。
+本影片對市面上多款 Thunderbolt 5 擴充基座進行深入比較，涵蓋CalDigit、Sonnet、iVANKY、Anker等品牌，說明TB5可提供80-120Gbps頻寬，讓使用者僅靠一條線串聯顯示器、網路與周邊並為筆電充電。
 
-📊 關鍵重點與數據
-1. 核心設計：內建雙 Thunderbolt 控制器（相當於兩個擴充埠合一），透過兩條線與Mac連接分擔傳輸壓力，避免多螢幕、硬碟讀寫、高負載網路同時運作時搶佔頻寬
-2. 規格：號稱「擴充埠之霸」共26個連接埠；僅支援Apple Silicon(M系列)，不支援Intel Mac或Windows；向下相容TB3/TB4；雙向頻寬最高80Gbps，非對稱顯示重載模式下單向可達120Gbps；供電最高140W
-3. 連接埠配置：前方2個USB-A(10Gbps)、7個USB-C(10Gbps，含1個45W PD)、SD+MicroSD卡槽、3.5mm音源孔；後方類比/光纖音源、2個TB主機埠、4個TB5輸出埠、HDMI(4K60Hz)、DisplayPort 2.1、1個USB-C+2個USB-A(10Gbps)、10GbE網路孔；最高同時支援4台6K@60Hz顯示器（依Mac晶片等級而定）
-4. 實測結果：長期使用穩定，未曾斷線；連接NAS的10GbE網路實測傳輸速度達800-900MB/s，可直接從NAS剪輯影片無需先搬到本機；鋁合金外殼+銅核心散熱+雙風扇，長時間運作機身涼爽且風扇運轉安靜
-5. 缺點：需同時佔用Mac上2個Thunderbolt接口（但換來的連接埠數量遠超此代價）；售價高達649美元，門檻較高
+📊 各產品完整規格與價格
+1. CalDigit Element 5 Hub：正面2個USB-C數據埠，背面2個USB-A、3個TB5埠、1個USB-A，側面1個主機連接埠；供電90W；缺點供電瓦數較低、無內建網路孔/SD讀卡機/專屬視訊輸出；價格約279.99美元；定位輕巧靈活、價格最親民
+2. Sonnet Echo 13 SSD Dock：內建高速SSD(可選1TB/2TB/4TB)；正面主機埠、電源鍵、備用TB埠、快充USB-A、UHS-II讀卡機、耳機孔，背面3個USB-A、2.5GbE網路孔、2個TB埠；塑膠機身但散熱佳；缺點USB-C埠少、無專屬視訊輸出、無10GbE網路；價格約439.99美元(1TB版)
+3. CalDigit TS5 Plus：連接埠數量最多、性能最強，多組USB控制晶片確保滿血頻寬；正面2個USB-C(1個36W)、UHS-II讀卡機、耳機、USB-A，背面3個USB-C、4個USB-A、10GbE網路孔、獨立麥克風/耳機孔、DisplayPort、2個下行+1個上行TB埠；附330W變壓器供電140W；價格約499.99美元；適合大量USB設備、音訊介面或NAS連接的專業創作者/音樂人
+4. CalDigit TS5(標準版)：與Plus類似提供140W供電但USB-C埠較少；具3個TB下行埠(Plus為2個)，適合連接多台TB顯示器；缺點無專屬視訊輸出、網路降級為2.5GbE；價格約399.99美元
+5. iVANKY FusionDock Pro 3(榮譽提名)：規格與Sonnet Echo 13相似，金屬機身但無內建SSD；價格約439.99美元；作者認為缺乏殺手級特色，除非大特價否則較難推薦
+6. Anker Prime Thunderbolt 5 Dock(榮譽提名)：電源變壓器內建機身，免除桌下大發電磚；缺點僅3個TB埠、USB埠總數較少；價格約399.99美元；建議特價300美元左右入手才划算
 
 💡 結論與建議
-- 作者認為649美元雖貴，但若分開購買「兩個TB5擴充埠+10Gb網路轉接器+高階讀卡機」花費相近，定價合理
-- 推薦對象：需要NAS高速讀寫、外接多台高解析度螢幕，或擁有大量周邊設備並希望桌面保持極簡乾淨的專業創作者——目前市面上最佳選擇之一
-- 一般文書使用者可能效能過剩；適合重度擴充需求的Mac用戶作為終極解決方案
+- 預算有限/入門首選：CalDigit Element 5 Hub——彈性高、價格最便宜，適合Mac Mini/Mac Studio用戶做少量擴充或Daisy-chain串接
+- 需要擴充筆電儲存空間：Sonnet Echo 13——兼顧連接埠與極速SSD儲存，適合不想外接硬碟的用戶
+- 重度專業玩家/終極推薦：CalDigit TS5 Plus——大量USB設備、需10GbE連接NAS的用戶應直接選擇，擴充火力與穩定度最強
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 7/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 8/10）
