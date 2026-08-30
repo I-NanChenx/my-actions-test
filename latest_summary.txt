@@ -1,20 +1,20 @@
-🎬 影片重點筆記（6/10）
-Top 5 Best Docking Stations 2026 | USB-C & Thunderbolt 5（Besto）
-https://www.youtube.com/watch?v=C0wpkwZ1W_0
+🎬 影片重點筆記（7/10）
+The Endgame Thunderbolt 5 Dock for Mac - iVANKY FusionDock Ultra（Sightseeing Stan）
+https://www.youtube.com/watch?v=Jc-1X9KebaE
 
 📌 影片主旨
-本影片精選 2026 年市面上排名前五的最佳擴充基座，解決筆電連接埠不足問題，讓筆電化身多螢幕、高速儲存、桌面整潔的全能工作站，並針對不同使用族群逐一比較。
+創作者 Sightseeing Stan 針對 iVANKY FusionDock Ultra（專為 Apple Silicon Mac 設計的頂規 Thunderbolt 5 擴充埠）進行長達5-6個月的深度實測，解決 Mac Studio 連接埠不足且背後孔位盲插不便的痛點。
 
-📊 各產品完整規格與排名
-第5名 - iVANKY FusionDock Max 1：目標高階MacBook Pro用戶/影像創作者；內建雙TB4晶片，4個TB4接口(40Gbps)、5個USB-A、6個USB-C；最高支援四台6K顯示器；缺點是主要為Mac設計，Windows相容性有限；影片未提及價格
-第4名 - Satechi Triple 4K Display Dock：適合多螢幕工作流程使用者(交易員、工程師)；支援三台4K@60Hz外接顯示器；1個HDMI+2個彈性HDMI/DP接口；前置USB-C/USB-A支援10Gbps；缺點充電功率低(僅約7.5W)，不適合為筆電高瓦數充電
-第3名 - Satechi Dual Dock Stand：適合追求桌面美觀與人體工學者；雙USB-C接頭，支援雙4K螢幕、最高75W供電(需自備變壓器)；設計為筆電支架並內建SSD插槽可直接擴充儲存空間
-第2名 - Anker 568 USB-C Docking Station：適合追求品牌可靠性與性價比平衡者；支援最多三台4K@60Hz顯示器(HDMI+DP組合)；提供最高100W USB-C PD供電；設計緊湊簡約
-第1名 - Kensington Thunderbolt 5 Docking Station：適合追求極致效能、面向未來的高階工作站用戶；採用最新TB5標準，3個下行TB5接口，鋁合金機身含獨立電源開關；移除傳統HDMI以保留高速TB通道；折扣時價格有時低於300美元，性價比極高
+📊 關鍵重點與數據
+1. 核心設計：內建雙 Thunderbolt 控制器（相當於兩個擴充埠合一），透過兩條線與Mac連接分擔傳輸壓力，避免多螢幕、硬碟讀寫、高負載網路同時運作時搶佔頻寬
+2. 規格：號稱「擴充埠之霸」共26個連接埠；僅支援Apple Silicon(M系列)，不支援Intel Mac或Windows；向下相容TB3/TB4；雙向頻寬最高80Gbps，非對稱顯示重載模式下單向可達120Gbps；供電最高140W
+3. 連接埠配置：前方2個USB-A(10Gbps)、7個USB-C(10Gbps，含1個45W PD)、SD+MicroSD卡槽、3.5mm音源孔；後方類比/光纖音源、2個TB主機埠、4個TB5輸出埠、HDMI(4K60Hz)、DisplayPort 2.1、1個USB-C+2個USB-A(10Gbps)、10GbE網路孔；最高同時支援4台6K@60Hz顯示器（依Mac晶片等級而定）
+4. 實測結果：長期使用穩定，未曾斷線；連接NAS的10GbE網路實測傳輸速度達800-900MB/s，可直接從NAS剪輯影片無需先搬到本機；鋁合金外殼+銅核心散熱+雙風扇，長時間運作機身涼爽且風扇運轉安靜
+5. 缺點：需同時佔用Mac上2個Thunderbolt接口（但換來的連接埠數量遠超此代價）；售價高達649美元，門檻較高
 
 💡 結論與建議
-- 總體最值得購買：Kensington Thunderbolt 5 Docking Station（第一名）——採用最新最快的TB5規格，可應對未來數年設備升級需求，折扣時不到300美元即可入手，性價比與效能兼具
-- MacBook Pro專業用戶、需要極致多螢幕輸出：首選iVANKY FusionDock Max 1
-- 重視桌面美學與一體性、想同時獲得支架+擴充埠+額外SSD儲存：首選Satechi Dual Dock Stand
+- 作者認為649美元雖貴，但若分開購買「兩個TB5擴充埠+10Gb網路轉接器+高階讀卡機」花費相近，定價合理
+- 推薦對象：需要NAS高速讀寫、外接多台高解析度螢幕，或擁有大量周邊設備並希望桌面保持極簡乾淨的專業創作者——目前市面上最佳選擇之一
+- 一般文書使用者可能效能過剩；適合重度擴充需求的Mac用戶作為終極解決方案
 
-（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 6/10）
+（本摘要由 Gemini 直接觀看影片生成，經 Claude 整理格式；此為「Thunderbolt 5 Dock」主題批次之 7/10）
